@@ -1,0 +1,16 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.ssh.insert_key = false
+  config.vm.define "lb" do |lb|
+    lb.vm.hostname = "lb"
+    lb.vm.network :private_network, ip: "192.168.2.1"
+  end
+  config.vm.define "www" do |www|
+    www.vm.hostname = "www"
+    www.vm.network :private_network, ip: "192.168.2.2"
+  end
+  config.vm.define "db" do |db|
+    db.vm.hostname = "db"
+    db.vm.network :private_network, ip: "192.168.2.3"
+  end
+end
