@@ -1,15 +1,13 @@
-import { fork, all, takeEvery, put, delay } from "redux-saga/effects";
+import { call, all, takeEvery, put, delay } from "redux-saga/effects";
 import { addTodo, removeTodo, fetchTodos } from "./actions";
-import { TodoState } from "@src/types";
+import { TodoState, Todo } from "@src/types";
+import * as api from './services';
 
 
-
-let nextId = 10;
 function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {
   try {
-    yield delay(500);
-    let id = nextId++;
-    yield put(addTodo.success({ ...action.payload, id }));
+    const data : Todo = yield call (api.addTodo, action.payload)
+    yield put(addTodo.success(data));
   } catch (error) {
     yield put(addTodo.failure(`addTodo failed ${error}`));
   }
@@ -17,7 +15,7 @@ function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {
 
 function* removeTodoSaga(action: ReturnType<typeof removeTodo.request>) {
   try {
-    yield delay(500);
+    yield call (api.removeTodo, action.payload )
     yield put(removeTodo.success(action.payload));
   } catch (error) {
     yield put(removeTodo.failure(`removeTodo failed ${error}`));
@@ -26,12 +24,8 @@ function* removeTodoSaga(action: ReturnType<typeof removeTodo.request>) {
 
 function* fetchTodosSaga(action: ReturnType<typeof fetchTodos.request>) {
   try {
-    yield delay(500);
-    const initialTodos: TodoState = [
-      { id: 0, text: "hello world", author: "psacawa" },
-      { id: 1, text: "make lekt", author: "psacawa" }
-    ];
-    yield put(fetchTodos.success(initialTodos));
+    const data: TodoState = yield call (api.fetchTodos)
+    yield put (fetchTodos.success (data))
   } catch (error) {
     yield put(fetchTodos.failure(`fetchTodo failed ${error}`));
   }

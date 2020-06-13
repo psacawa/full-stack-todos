@@ -21,7 +21,6 @@ class TodoForm extends Component<Props, {}> {
         <Formik
           initialValues={{ text: "", author: "" }}
           onSubmit={(values) => {
-            console.log("onSubmit");
             addTodo(values);
           }}
         >
