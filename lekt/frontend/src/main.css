@@ -1,0 +1,8 @@
+/* .App, .Todos { */
+/*   text-align: center; */
+/*   margin: auto; */
+/* } */
+
+td {
+  min-width : 100px;
+}
