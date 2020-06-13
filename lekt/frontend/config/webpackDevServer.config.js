@@ -57,6 +57,8 @@ module.exports = function(proxy, allowedHost) {
     contentBasePublicPath: paths.publicUrlOrPath,
     // By default files from `contentBase` will not trigger a page reload.
     watchContentBase: true,
+    // zapisz do dysku aby django mógł serwować w środowisku deweloperskim
+    writeToDisk: true,
     // Enable hot reloading server. It will provide WDS_SOCKET_PATH endpoint
     // for the WebpackDevServer client so it can learn when the files were
     // updated. The WebpackDevServer client is included as an entry point
