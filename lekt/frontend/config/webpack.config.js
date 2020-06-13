@@ -160,9 +160,11 @@ module.exports = function(webpackEnv) {
     ].filter(Boolean),
     output: {
       // The build folder.
+
       // musimy zapisać w każdym przypadku do katalogu '/build'
-      // path: isEnvProduction ? paths.appBuild : undefined,
-      path: paths.appBuild,
+      path: isEnvProduction ? paths.appBuild : undefined,
+      // path: paths.appBuild,
+
       // Add /* filename */ comments to generated require()s in the output.
       pathinfo: isEnvDevelopment,
       // There will be one main bundle, and one file per asynchronous chunk.
