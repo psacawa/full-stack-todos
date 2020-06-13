@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "todos",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -53,22 +54,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "lekt.urls"
 
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
-
 WSGI_APPLICATION = "lekt.wsgi.application"
 
 
@@ -80,6 +65,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "todos",
         "USER": 'django',
+        "PASSWORD": "pass",
+        "HOST": "localhost",
     }
 }
 
@@ -104,11 +91,25 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+STATIC_URL = "/stat/"
+#  STATIC_ROOT = "/var/www/django"
+STATICFILES_DIRS = [os.path.join (BASE_DIR, 'frontend', 'build')]
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
-STATIC_URL = "/static/"
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS":  [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
 
 # Django Extensions settings
 SHELL_PLUS = "ipython"

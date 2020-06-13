@@ -1,6 +1,8 @@
 import { fork, all, takeEvery, put, delay } from "redux-saga/effects";
 import { addTodo, removeTodo, fetchTodos } from "./actions";
-import {TodoState} from '@src/types';
+import { TodoState } from "@src/types";
+
+
 
 let nextId = 10;
 function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {
@@ -25,9 +27,9 @@ function* removeTodoSaga(action: ReturnType<typeof removeTodo.request>) {
 function* fetchTodosSaga(action: ReturnType<typeof fetchTodos.request>) {
   try {
     yield delay(500);
-    const initialTodos : TodoState= [
+    const initialTodos: TodoState = [
       { id: 0, text: "hello world", author: "psacawa" },
-      { id: 1, text: "make lekt", author: "psacawa" },
+      { id: 1, text: "make lekt", author: "psacawa" }
     ];
     yield put(fetchTodos.success(initialTodos));
   } catch (error) {
@@ -39,8 +41,8 @@ export default function* rootSaga() {
   yield all([
     takeEvery(addTodo.request, addTodoSaga),
     takeEvery(removeTodo.request, removeTodoSaga),
-    takeEvery(fetchTodos.request, fetchTodosSaga),
+    takeEvery(fetchTodos.request, fetchTodosSaga)
   ]);
   // make initial fetch request
-  yield put (fetchTodos.request ())
+  yield put(fetchTodos.request());
 }
