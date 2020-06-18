@@ -1,0 +1,41 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Delete an existing full-deployment key
+      ec2_key:
+        name: "{{ key_name }}"
+        region: "{{ aws_region }}"
+        state: absent
+    - name: Create EC2 key for full deployment
+      ec2_key:
+        name: "{{ key_name }}"
+        region: "{{ aws_region }}"
+      register: key_result
+    - name: Save private key to disk
+      copy:
+        content: "{{ key_result.key.private_key }}"
+        dest: "~/.ssh/{{ key_name }}"
+      when:  key_result.changed 
+    - name: Make EC2 machines
+      ec2:
+        key_name: "{{ key_name }}"
+        instance_type: t2.micro
+        image: "{{ ami_id }}"
+        region: "{{ aws_region }}"
+        wait: true
+        exact_count: 1
+        count_tag: 
+          Name: "{{ item.name }}"
+        instance_tags: 
+          Name: "{{ item.name }}"
+      register: ec2_result
+      with_items: ec2_instances
+    - name: Build inventory from ec2 hosts
+      add_host:
+        name: "{{ item.public_ip }}"
+        groups:  "{{ item.tags.Name }}"
+      with_items: ec2_result.instances
+    - debug: var=ansible_groups

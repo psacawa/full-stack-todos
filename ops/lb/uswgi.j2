@@ -1,0 +1,15 @@
+# vim: set ft=nginx:
+
+upstream django {
+  server full-www
+}
+
+server {
+  listen 80 default_server;
+  listen 443 default_server;
+
+  location / {
+    uswgi_pass django;
+  }
+  
+}

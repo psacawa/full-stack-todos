@@ -1,0 +1,12 @@
+---
+- hosts: full-lb
+
+  pre_tasks:
+    - name: update cache
+      apt: update_cache=yes
+  roles:
+    - geerlingguy.firewall
+    # - geerlingguy.nginx
+  tasks:
+    - name: install nginx
+      package: nginx
