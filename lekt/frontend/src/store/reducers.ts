@@ -1,7 +1,7 @@
 import { createReducer, RootAction, getType } from "typesafe-actions";
 import { combineReducers } from "redux";
-import { TodoState, DisplayState } from "@src/types";
-import { addTodo, removeTodo, fetchTodos } from "./actions";
+import { TodoState, DisplayState, UserState } from "@src/types";
+import { addTodo, removeTodo, fetchTodos, login, logout, fetchUser } from "./actions";
 
 const todoReducer = createReducer<TodoState, RootAction>([])
   .handleAction(addTodo.success, (state, action) => [...state, action.payload])
@@ -29,7 +29,22 @@ const displayReducer = createReducer<DisplayState, RootAction>({
     }
   );
 
+const authReducer = createReducer<UserState, RootAction>({
+  loggedIn: false
+})
+  .handleAction(login.success, (state, action) => ({
+    ...action.payload,
+    loggedIn: true
+  }))
+  .handleAction(logout.success, (state, action) => ({ loggedIn: false }))
+  .handleAction(fetchUser.success, (state, action) => ({
+    ...state,
+    user: action.payload,
+    loggedIn: true
+  }));
+
 export default combineReducers({
   todos: todoReducer,
-  display: displayReducer
+  display: displayReducer,
+  auth: authReducer
 });

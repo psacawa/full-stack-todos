@@ -1,15 +1,41 @@
-import React from 'react';
-import TodoList from './components/TodoList';
-import TodoForm from './components/TodoForm';
-import "main.css"
+import React from "react";
+import { Router, Switch, Route, Redirect } from "react-router-dom";
+import { createBrowserHistory } from "history";
+import { makeStyles } from "@material-ui/core";
+import TodoView from "./views/TodoView";
+import LoginView from "./views/LoginView";
+import AppDrawer from "./components/AppDrawer";
+import CreateAccountView from "./views/CreateAccountView";
+import "main.css";
+import routes from "./routes";
+
+const history = createBrowserHistory();
+
+const useStyles = makeStyles({
+  root: { display: "flexbox" },
+  content: { marginLeft: 200 }
+});
 
 function App() {
+  const classes = useStyles();
   return (
-    <div className="App">
-    <h3>Persistent Todo App</h3>
-      <TodoList />
-      <TodoForm />
-    </div>
+    <Router history={history}>
+      <AppDrawer />
+      <main className={classes.content}>
+        <Switch>
+          {routes.map((route, idx) => {
+            return (
+              <Route
+                key={idx}
+                path={route.urlPath}
+                exact={route.exact}
+                component={route.component}
+              />
+            );
+          })}
+        </Switch>
+      </main>
+    </Router>
   );
 }
 

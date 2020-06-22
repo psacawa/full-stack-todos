@@ -8,8 +8,6 @@ let dispatchProps = {
   addTodo: addTodo.request
 };
 
-type FormikValues = TodoData;
-
 type Props = typeof dispatchProps;
 
 class TodoForm extends Component<Props, {}> {
@@ -19,20 +17,20 @@ class TodoForm extends Component<Props, {}> {
       <>
         <h4>Submit new Todo</h4>
         <Formik
-          initialValues={{ text: "", author: "" }}
-          onSubmit={(values) => {
+          initialValues={{ text: "", author: "", other: "" }}
+          onSubmit={values => {
             addTodo(values);
           }}
         >
-          <Form >
-          <label htmlFor="text">Text: </label> 
-          <Field name="text" type="text" /> <br />
-            <label htmlFor="author">Author: </label>
-            <Field
-              name="author"
-              type="text"
-            />
-            <br />
+          <Form>
+            <p>
+              <label htmlFor="text">Text: </label>
+              <Field name="text" type="text" />{" "}
+            </p>
+            <p>
+              <label htmlFor="author">Author: </label>
+              <Field name="author" type="text" />
+            </p>
             <input type="submit" value="Submit"></input>
           </Form>
         </Formik>
