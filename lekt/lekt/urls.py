@@ -20,27 +20,17 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
 from os.path import join
-
-def static_redirect(request: HttpRequest):
-    """
-    A stupid redirect to the directory serving files statically for development.
-    """
-    prefix = settings.STATIC_URL.rstrip(r'/')
-    if len (request.path) <= 1: 
-        request.path = '/index.html'
-        print (f'new path is {request.path}')
-    new_url = f"{prefix}{request.path}" 
-    print (f'static_redirect to {new_url}') 
-    return redirect(new_url)
+from .views import csrf_view
 
 urlpatterns = [
     path(r'admin/', admin.site.urls),
     path(r'api/', include ('todos.urls')),
+    path(r'auth/', include ('dj_rest_auth.urls')),
+    path(r'auth/registration', include ('dj_rest_auth.registration.urls')),
 ]
 
-# stupid  development hack to serve static files for frontend
 if settings.DEBUG:
-    urlpatterns += [
-        re_path(r'^.*/$', static_redirect), 
-        path('', static_redirect),
-    ]
+    import debug_toolbar
+    urlpatterns = [
+        path("__debug__", include(debug_toolbar.urls)),
+    ] + urlpatterns
