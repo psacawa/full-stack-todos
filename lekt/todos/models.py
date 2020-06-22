@@ -1,8 +1,9 @@
 from django.db import models
+from django.db.models.manager import BaseManager
+from django.contrib.auth.models import User
 
-# Create your models here.
 
 class Todo(models.Model):
     """ Generic todo """
-    text = models.CharField (max_length = 1000)
-    author = models.CharField (max_length = 100, default = 'psacawa')
+    text = models.CharField(max_length=1000)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
