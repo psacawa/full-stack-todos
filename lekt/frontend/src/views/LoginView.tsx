@@ -1,20 +1,26 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
-import { LoginFormValues } from "../types";
+import { LoginFormValues, RootState } from "../types";
 import { login } from "../store/actions";
 import { connect } from "react-redux";
+
+const mapStateToProps = (state: RootState) => ({
+  loggedIn: state.auth.loggedIn
+});
 
 const dispatchProps = {
   login: login.request
 };
 
-type Props = typeof dispatchProps;
+type Props = ReturnType<typeof mapStateToProps> & typeof dispatchProps;
 
-class LoginView extends Component<Props, {}> {
+class LoginView extends Component<Props> {
   render() {
-    const { login } = this.props;
-    return (
+    const { login, loggedIn } = this.props;
+    return loggedIn ? (
+      <Redirect to="/" />
+    ) : (
       <>
         <h3>Login</h3>
         <Formik
@@ -22,7 +28,9 @@ class LoginView extends Component<Props, {}> {
             username: "",
             password: ""
           }}
-          onSubmit={values => {login(values)}}
+          onSubmit={values => {
+            login(values);
+          }}
         >
           <Form>
             <p>
@@ -31,7 +39,7 @@ class LoginView extends Component<Props, {}> {
             </p>
             <p>
               <label htmlFor="password">Password: </label>
-              <Field type="text" name="password" />
+              <Field type="password" name="password" />
             </p>
             <input type="submit" value="Submit" name="" id="" />
           </Form>
@@ -41,4 +49,4 @@ class LoginView extends Component<Props, {}> {
   }
 }
 
-export default connect(null, dispatchProps)(LoginView);
+export default connect(mapStateToProps, dispatchProps)(LoginView);
