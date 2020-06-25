@@ -7,7 +7,7 @@ const todosBaseUrl = "/api/todos/";
 export function addTodo(requestData: TodoData) {
   return axios.post(todosBaseUrl, requestData).then((response: AxiosResponse<Todo>) => {
     return response.data;
-  });
+  })
 }
 
 export function removeTodo(requestData: number) {
@@ -19,22 +19,20 @@ export function removeTodo(requestData: number) {
 }
 
 export function fetchTodos() {
-  return axios.get(todosBaseUrl).then((response: AxiosResponse<TodoState>) => {
-    return response.data;
-  });
+  return axios.get(todosBaseUrl)
+    .then((response: AxiosResponse<TodoState>) => {
+      return response.data;
+    });
 }
 
-
 export function login(loginData: LoginFormValues) {
-  return axios.post('/auth/login/', loginData).then(response => response.data);
+  return axios.post("/auth/login/", loginData).then(response => response.data);
 }
 
 export function logout() {
-  return axios.post('/auth/logout/').then(response => response.data);
+  return axios.post("/auth/logout/").then(response => response.data);
 }
-
 
 export function fetchUser() {
-  return axios.get ('/auth/user').then (response => response.data);
+  return axios.get("/auth/user/").then(response => response.data);
 }
-

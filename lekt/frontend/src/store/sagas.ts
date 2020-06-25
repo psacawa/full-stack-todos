@@ -1,13 +1,16 @@
-import { call, all, takeEvery, put, delay } from "redux-saga/effects";
-import { addTodo, removeTodo, fetchTodos, login, logout, fetchUser } from "./actions";
+import { call, all, takeEvery, put, delay, take, fork, cancel } from "redux-saga/effects";
+import {Task} from 'redux-saga';
+import { addTodo, removeTodo, fetchTodos, login, logout} from "./actions";
 import { TodoState, Todo, LoginFormValues, AuthData, User } from "@src/types";
-import * as api from './services';
+import * as api from "./services";
 import axios, { AxiosError } from "axios";
-
+import { ActionType, getType, RootAction } from "typesafe-actions";
 
 function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {
   try {
-    const data : Todo = yield call (api.addTodo, action.payload)
+    console.log("before api.addTodo");
+    const data: Todo = yield call(api.addTodo, action.payload);
+    console.log("after api.addTodo");
     yield put(addTodo.success(data));
   } catch (error) {
     yield put(addTodo.failure(`addTodo failed ${error}`));
@@ -16,7 +19,7 @@ function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {
 
 function* removeTodoSaga(action: ReturnType<typeof removeTodo.request>) {
   try {
-    yield call (api.removeTodo, action.payload )
+    yield call(api.removeTodo, action.payload);
     yield put(removeTodo.success(action.payload));
   } catch (error) {
     yield put(removeTodo.failure(`removeTodo failed ${error}`));
@@ -25,42 +28,50 @@ function* removeTodoSaga(action: ReturnType<typeof removeTodo.request>) {
 
 function* fetchTodosSaga(action: ReturnType<typeof fetchTodos.request>) {
   try {
-    const data: TodoState = yield call (api.fetchTodos)
-    yield put (fetchTodos.success (data))
+    const data: TodoState = yield call(api.fetchTodos);
+    yield put(fetchTodos.success(data));
   } catch (error) {
     yield put(fetchTodos.failure(`fetchTodo failed ${error}`));
   }
 }
 
-function* fetchUserSaga(action: ReturnType<typeof fetchUser.request>) {
-  try {
-    const data: User = yield call (api.fetchUser)
-    yield put (fetchUser.success (data))
-  } catch (error) {
-    yield put(fetchUser.failure(`fetchUser failed ${error}`));
+function* loginFlow() {
+  while (true) {
+    const loginAction: ActionType<typeof login.request> = yield take(login.request);
+    const task: Task = yield fork(authenticate, loginAction.payload);
+    const logoutAction: RootAction = yield take([logout.success, login.failure]);
+    if (logoutAction.type === getType(logout.request)) {
+      yield cancel (task)
+    }
+    localStorage.removeItem("key");
+    delete axios.defaults.headers.common["Authorization"];
   }
 }
 
-function* loginSaga(action: ReturnType<typeof login.request>) {
+function* authenticate(values: LoginFormValues) {
   try {
-    const data: any = yield call (api.login, action.payload)
-    const authData: AuthData = { key: data.key }
-    axios.defaults.headers.common['Authorization'] = authData.key
-    const userData: User = yield put (fetchUser.request()) 
-    yield put (fetchTodos.request()) 
-    yield put (login.success(authData))
+    console.log (values)
+    const authData: AuthData = yield call(api.login, values);
+    axios.defaults.headers.common["Authorization"] = `Token ${authData.key}`;
+    localStorage.setItem("key", authData.key);
+    const user: User = yield call(api.fetchUser);
+    yield put(login.success(user));
+    yield put(fetchTodos.request());
   } catch (error) {
-    const data: LoginFormValues = error.response.data 
-    yield put (login.failure (data))
+    console.error(error);
+    yield put(login.failure(error.message));
   }
 }
 
-function* logoutSaga(action: ReturnType<typeof logout.request>) {
-  try {
-    const data: User = yield call (api.logout)
-    yield put (logout.success ())
-  } catch (error) {
-    yield put(logout.failure(`logout failed ${error}`));
+function* logoutFlow() {
+  while (true) {
+    yield take(logout.request);
+    try {
+      yield api.logout();
+      yield put(logout.success());
+    } catch (error) {
+      yield logout.failure(error.message);
+    }
   }
 }
 
@@ -69,10 +80,7 @@ export default function* rootSaga() {
     takeEvery(addTodo.request, addTodoSaga),
     takeEvery(removeTodo.request, removeTodoSaga),
     takeEvery(fetchTodos.request, fetchTodosSaga),
-    takeEvery(fetchUser.request, fetchUserSaga),
-    takeEvery(login.request, loginSaga),
-    takeEvery(logout.request, logoutSaga),
+    fork(loginFlow),
+    fork(logoutFlow)
   ]);
-  // make initial fetch request
-  yield put(fetchTodos.request());
 }

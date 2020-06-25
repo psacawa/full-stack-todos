@@ -30,7 +30,7 @@ export const login = createAsyncAction(
   "LOGIN_REQUEST", 
   "LOGIN_SUCCESS", 
   "LOGIN_FAILURE"
-)< LoginFormValues, AuthData, LoginFormValues >();
+)< LoginFormValues, User, string>();
 
 export const logout = createAsyncAction(
   "LOGOUT_REQUEST",
@@ -38,12 +38,6 @@ export const logout = createAsyncAction(
   "LOGOUT_FAILURE"
 )<undefined, undefined, string>();
 
-export const fetchUser = createAsyncAction(
-  "FETCH_USER_REQUEST",
-  "FETCH_USER_SUCCESS",
-  "FETCH_USER_FAILURE"
-)<undefined, User, string>();
-
 export const todoAction = { addTodo, removeTodo, fetchTodos };
-export const authAction = { login, logout, fetchUser };
+export const authAction = { login, logout };
 export default { todoAction, authAction };

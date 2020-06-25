@@ -27,10 +27,6 @@ class TodoForm extends Component<Props, {}> {
               <label htmlFor="text">Text: </label>
               <Field name="text" type="text" />{" "}
             </p>
-            <p>
-              <label htmlFor="author">Author: </label>
-              <Field name="author" type="text" />
-            </p>
             <input type="submit" value="Submit"></input>
           </Form>
         </Formik>

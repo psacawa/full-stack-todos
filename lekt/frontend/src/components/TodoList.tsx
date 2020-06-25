@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { RootState } from "@src/types";
-import { removeTodo, fetchTodos } from "../store/actions";
+import { removeTodo } from "../store/actions";
 import { connect } from "react-redux";
 import {todosSelector} from '../store/selectors';
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -11,7 +11,6 @@ const mapStateToProps = (state: RootState) => ({
 });
 const dispatchProps = {
   removeTodo: removeTodo.request,
-  fetchTodos: fetchTodos.request
 };
 type Props = ReturnType<typeof mapStateToProps> & typeof dispatchProps 
 
@@ -20,9 +19,6 @@ class TodoList extends Component<Props> {
     super(props);
     this.state = {};
   }
-  // componentDidMount() {
-  //   this.props.fetchTodos();
-  // }
   render() {
     const { removeTodo, todos, isFetching } = this.props;
     return isFetching ? (
