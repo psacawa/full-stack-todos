@@ -7,6 +7,7 @@ base_patterns = [
     "templates.py",
     "api.py",
     "database.py",
+    "logging.py",
 ]
 
 include (*base_patterns)
