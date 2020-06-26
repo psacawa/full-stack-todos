@@ -11,7 +11,7 @@ LOGGING = {
     "loggers": {"lekt": {"handlers": ["console"], "level": "DEBUG", "propagate": True}},
     "handlers": {
         "console": {
-            "level": "INFO",
+            "level": "DEBUG",
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         }

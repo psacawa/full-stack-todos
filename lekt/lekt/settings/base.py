@@ -60,6 +60,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    #  'lekt.middleware.TimeDelayMiddleware',
 ]
 
 ROOT_URLCONF = "lekt.urls"
@@ -85,3 +86,6 @@ LOGIN_REDIRECT_URL = '/'
 # Django Extensions settings
 SHELL_PLUS = "ipython"
 IPYTHON_ARGUMENTS = ['--nosep', '--classic']
+
+# number of seconds to delay request for
+REQUEST_TIME_DELAY = 1

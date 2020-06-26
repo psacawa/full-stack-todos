@@ -22,11 +22,9 @@ class TodoViewSet(ModelViewSet):
         """ Get only todos for the authed user. """
         user = self.request.user
         return Todo.objects.filter(owner=user)
-
     def perform_create(self, serializer):
         """ Fill in user from authentication data """
         serializer.save(owner=self.request.user)
-
     def perform_update(self, serializer):
         """ Fill in user from authentication data """
         serializer.save(owner=self.request.user)
