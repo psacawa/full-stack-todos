@@ -1,11 +1,8 @@
 import React from "react";
-import { Router, Switch, Route, Redirect } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core";
-import TodoView from "./views/TodoView";
-import LoginView from "./views/LoginView";
 import AppDrawer from "./components/AppDrawer";
-import CreateAccountView from "./views/CreateAccountView";
 import "main.css";
 import routes from "./routes";
 

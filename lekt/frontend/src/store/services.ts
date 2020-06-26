@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { TodoState, TodoData, Todo } from "@src/types";
-import { LoginFormValues, CreateAccountFormValues } from "../types";
+import { LoginFormValues } from "../types";
 
 const todosBaseUrl = "/api/todos/";
 

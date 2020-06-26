@@ -1,9 +1,9 @@
-import { call, all, takeEvery, put, delay, take, fork, cancel } from "redux-saga/effects";
+import { call, all, takeEvery, put, take, fork, cancel } from "redux-saga/effects";
 import {Task} from 'redux-saga';
 import { addTodo, removeTodo, fetchTodos, login, logout} from "./actions";
 import { TodoState, Todo, LoginFormValues, AuthData, User } from "@src/types";
 import * as api from "./services";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { ActionType, getType, RootAction } from "typesafe-actions";
 
 function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {

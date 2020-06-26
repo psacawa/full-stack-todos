@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
-import { LoginFormValues, RootState } from "../types";
+import { RootState } from "../types";
 import { login } from "../store/actions";
 import { connect } from "react-redux";
 

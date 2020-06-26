@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Formik, Field, Form } from "formik";
 import { addTodo } from "../store/actions";
 import { connect } from "react-redux";
-import { TodoData } from "@src/types";
 
 let dispatchProps = {
   addTodo: addTodo.request

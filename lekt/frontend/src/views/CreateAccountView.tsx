@@ -1,6 +1,5 @@
-import React, { Component } from "react";
-import { Formik, Field, Form, FormikErrors } from "formik";
-import { connect } from "react-redux";
+import React from "react";
+import { Formik, Field, Form } from "formik";
 
 interface FormValues {
   username: string;
@@ -18,7 +17,7 @@ export default () => {
           password: ""
         }}
         validate={(values: FormValues) => {
-          let errors: FormikErrors<FormValues> = {};
+          // let errors: FormikErrors<FormValues> = {};
         }}
         onSubmit={values => {}}
       >

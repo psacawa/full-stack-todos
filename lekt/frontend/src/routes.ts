@@ -1,4 +1,3 @@
-import { Component } from "react";
 import LoginView from "./views/LoginView";
 import LogoutView from "./views/LogoutView";
 import TodoView from "./views/TodoView";

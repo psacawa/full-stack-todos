@@ -1,6 +1,6 @@
 import { createAsyncAction } from "typesafe-actions";
-import { Todo, TodoData, AuthData, User } from "@src/types";
-import { CreateAccountFormValues, LoginFormValues, UserState } from "../types";
+import { Todo, TodoData, User } from "@src/types";
+import { CreateAccountFormValues, LoginFormValues } from "../types";
 
 export const addTodo = createAsyncAction(
   "ADD_TODO_REQUEST",
