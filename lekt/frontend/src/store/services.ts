@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
-import { TodoState, TodoData, Todo } from "@src/types";
-import { LoginFormValues } from "../types";
+import { TodoState, TodoData, Todo, CreateAccountData } from "@src/types";
+import { LoginData } from "../types";
 
 const todosBaseUrl = "/api/todos/";
 
@@ -25,7 +25,7 @@ export function fetchTodos() {
     });
 }
 
-export function login(loginData: LoginFormValues) {
+export function login(loginData: LoginData) {
   return axios.post("/auth/login/", loginData).then(response => response.data);
 }
 
@@ -35,4 +35,8 @@ export function logout() {
 
 export function fetchUser() {
   return axios.get("/auth/user/").then(response => response.data);
+}
+
+export function createAccount(accountData: CreateAccountData) {
+  return axios.post ('/auth/registration', accountData).then (response => response.data)
 }

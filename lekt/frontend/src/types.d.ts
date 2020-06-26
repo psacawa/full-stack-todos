@@ -12,12 +12,13 @@ export interface DisplayState {
   isFetching: boolean;
 }
 
-interface CreateAccountFormValues {
+interface CreateAccountData {
   username: string;
   password1: string;
   password2: string;
+  email: string;
 }
-interface LoginFormValues {
+interface LoginData {
   username: string;
   password: string;
 }

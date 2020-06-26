@@ -1,6 +1,6 @@
 import { createAsyncAction } from "typesafe-actions";
 import { Todo, TodoData, User } from "@src/types";
-import { CreateAccountFormValues, LoginFormValues } from "../types";
+import { CreateAccountData, LoginData } from "../types";
 
 export const addTodo = createAsyncAction(
   "ADD_TODO_REQUEST",
@@ -24,13 +24,13 @@ export const createAccount = createAsyncAction(
   "CREATE_ACCOUNT_REQUEST",
   "CREATE_ACCOUNT_SUCCESS",
   "CREATE_ACCOUNT_FAILURE"
-)<CreateAccountFormValues, undefined, string>();
+)<CreateAccountData, undefined, string>();
 
 export const login = createAsyncAction(
   "LOGIN_REQUEST", 
   "LOGIN_SUCCESS", 
   "LOGIN_FAILURE"
-)< LoginFormValues, User, string>();
+)< LoginData, User, string>();
 
 export const logout = createAsyncAction(
   "LOGOUT_REQUEST",
