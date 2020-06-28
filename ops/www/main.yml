@@ -1,12 +1,54 @@
 ---
-- hosts: full-lb
-
+- hosts: full_www
+  become: true
+  vars_files: 
+    - ./vars.yml
   pre_tasks:
     - name: update cache
       apt: update_cache=yes
   roles:
-    - geerlingguy.firewall
-    # - geerlingguy.nginx
+    - role: geerlingguy.firewall
+    - role: geerlingguy.postgresql
+    - role: psacawa.dotpliki
+      become: false
+      tag: dotpliki
   tasks:
-    - name: install nginx
-      package: nginx
+    - name: install packages from apt
+      package: 
+        name: "{{ apt_packages }}"
+        state: present
+    - name: create application folder
+      file: 
+        path: "{{ application_path }}"
+        state: directory
+    - name: clone application repository
+      git: 
+        repo: "{{ git_repsitory_url }}"
+        dest: "{{ application_path }}"
+        force: yes
+    - name: install python deps to virtualenv
+      pip:
+        chdir: "{{ application_path }}"
+        requirements: "{{ application_path }}/lekt/requirements.pip"
+        # virtualenv: "{{ application_path }}"
+        # virtualenv_python: "{{ python_version }}"
+      tags: pip
+    - name: copy uwsgi config
+      template:
+        src: templates/uwsgi.ini.j2
+        dest: "{{ uwsgi_folder }}/apps-available/uwsgi.ini"
+        mode: 0644
+      tags: uwsgi
+      notify: restart uwsgi
+    - name: create symlink to uwsgi config
+      file:
+        src: "{{ uwsgi_folder }}/apps-available/uwsgi.ini"
+        dest: "{{ uwsgi_folder }}/apps-enabled/uwsgi.ini"
+        state: link
+      tags: uwsgi
+      notify: restart uwsgi
+  handlers:
+    - name: restart uwsgi
+      service: 
+        name: uwsgi
+        state: restarted

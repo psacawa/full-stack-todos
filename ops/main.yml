@@ -1,4 +1,4 @@
 ---
 - hosts: localhost
-- import_playbook: ec2.yml
+- import_playbook: provision.yml
 - import_playbook: configure.yml

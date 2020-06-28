@@ -1,5 +1,6 @@
 ---
+- hosts: localhost
 # - import_playbook: ./lb/main.yml
-# - import_playbook: ./www/main.yml
+- import_playbook: ./www/main.yml
 # - import_playbook: ./db/main.yml
 
