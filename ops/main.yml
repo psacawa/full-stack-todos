@@ -1,0 +1,4 @@
+---
+- hosts: localhost
+- import_playbook: provision.yml
+- import_playbook: configure.yml

@@ -1,0 +1,7 @@
+; vim: set ft=dosini:
+[uwsgi]
+plugins = python3,http
+socket = :{{ django_port }} 
+; socket = {{ uwsgi_unix_socket }} 
+chdir = {{ django_folder }}
+module = lekt.wsgi

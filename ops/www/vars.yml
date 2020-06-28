@@ -1,0 +1,35 @@
+# packages
+apt_packages:
+  - python3
+  - python3-pip
+  - uwsgi
+  - uwsgi-plugin-python3
+  - virtualenv
+  - libpq-dev
+
+
+# firewall
+firewall_allowed_tcp_ports:
+  - 22
+  - 80
+
+# application
+application_path: /var/app
+git_repsitory_url: https://github.com/psacawa/full-stack-todos
+python_version: python3.7
+django_port: "8000"
+django_folder: "{{ application_path }}/lekt"
+django_basename: lekt/wsgi.py
+django_file: "{{ django_folder }}/{{ django_basename }}"
+
+# uwsgi
+uwsgi_folder: /etc/uwsgi
+uwsgi_basename: uwsgi.ini
+uwsgi_unix_socket: /tmp/uwsgi.sock
+
+# postgres
+postgresql_databases:
+  - name: todos
+postgresql_users:
+  - name: django
+
