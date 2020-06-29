@@ -18,7 +18,15 @@ nginx_vhosts:
     root: "{{ static_root }}"
     index: index.html
     extra_parameters: |
-      location ~ /api {
+      location ~ ^/api {
+        uwsgi_pass django;
+        include uwsgi_params;
+      }
+      location ~ ^/auth {
+        uwsgi_pass django;
+        include uwsgi_params;
+      }
+      location ~ ^/admin {
         uwsgi_pass django;
         include uwsgi_params;
       }
@@ -50,4 +58,5 @@ postgresql_databases:
   - name: todos
 postgresql_users:
   - name: django
+    password: pass
 
