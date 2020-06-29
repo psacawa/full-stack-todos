@@ -30,6 +30,7 @@
         repo: "{{ git_repsitory_url }}"
         dest: "{{ backend_path }}"
       register: git_result
+      tags: frontend, backend
     - name: install python deps to virtualenv
       pip:
         chdir: "{{ backend_path }}"
@@ -73,7 +74,7 @@
       command:
         cmd: npm run build 
         chdir: "{{ frontend_path }}"
-        creates: "{{ frontend_path }}/build/index.html"
+        # creates: "{{ frontend_path }}/build/index.html"
       when: git_result.changed
       tags: frontend
     - name: Ensure nginx root exists
