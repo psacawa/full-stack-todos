@@ -29,6 +29,7 @@
       git: 
         repo: "{{ git_repsitory_url }}"
         dest: "{{ backend_path }}"
+      register: git_result
     - name: install python deps to virtualenv
       pip:
         chdir: "{{ backend_path }}"
@@ -36,19 +37,24 @@
         # virtualenv: "{{ backend_path }}"
         # virtualenv_python: "{{ python_version }}"
       tags: pip
+    - name: migrate database
+      django_manage:
+        app_path: "{{ backend_path }}/lekt"
+        command: migrate
+      tags: backend
     - name: copy uwsgi config
       template:
         src: templates/uwsgi.ini.j2
         dest: "{{ uwsgi_folder }}/apps-available/uwsgi.ini"
         mode: 0644
-      tags: uwsgi
+      tags: backend
       notify: restart uwsgi
     - name: create symlink to uwsgi config
       file:
         src: "{{ uwsgi_folder }}/apps-available/uwsgi.ini"
         dest: "{{ uwsgi_folder }}/apps-enabled/uwsgi.ini"
         state: link
-      tags: uwsgi
+      tags: backend
       notify: restart uwsgi
     - name: Install node
       # shell: "wget -qO- {{ nvm_install_url }} | bash"
@@ -68,6 +74,7 @@
         cmd: npm run build 
         chdir: "{{ frontend_path }}"
         creates: "{{ frontend_path }}/build/index.html"
+      when: git_result.changed
       tags: frontend
     - name: Ensure nginx root exists
       file:
@@ -79,7 +86,6 @@
       shell: "cp -r {{ frontend_path }}/build/* {{ static_root }}"
       tags: frontend
       notify: restart nginx
-
 
   handlers:
     - name: restart uwsgi
