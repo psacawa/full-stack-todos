@@ -38,5 +38,5 @@ export function fetchUser() {
 }
 
 export function createAccount(accountData: CreateAccountData) {
-  return axios.post ('/auth/registration', accountData).then (response => response.data)
+  return axios.post ('/auth/registration/', accountData).then (response => response.data)
 }

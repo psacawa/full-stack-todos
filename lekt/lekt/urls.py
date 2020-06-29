@@ -26,7 +26,7 @@ urlpatterns = [
     path(r'admin/', admin.site.urls),
     path(r'api/', include ('todos.urls')),
     path(r'auth/', include ('dj_rest_auth.urls')),
-    path(r'auth/registration', include ('dj_rest_auth.registration.urls')),
+    path(r'auth/registration/', include ('dj_rest_auth.registration.urls')),
 ]
 
 if settings.DEBUG:
