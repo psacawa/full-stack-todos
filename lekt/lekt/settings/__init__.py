@@ -1,6 +1,12 @@
 from split_settings.tools import include, optional
 from os import environ
 
+ENVIRONMENT = environ.get("DJANGO_ENV", "development")
+assert ENVIRONMENT in (
+    "development",
+    "production",
+), f"Unsupported environment {ENVIRONMENT}"
+
 base_patterns = [
     "base.py",
     "auth.py",
@@ -8,6 +14,7 @@ base_patterns = [
     "api.py",
     "database.py",
     "logging.py",
+    f'{ENVIRONMENT}.py',
 ]
 
 include (*base_patterns)

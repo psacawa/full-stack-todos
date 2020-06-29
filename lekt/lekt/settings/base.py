@@ -10,9 +10,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 from os.path import join, abspath, dirname
+from os import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = '/'.join(abspath(__file__).split('/')[:-3])
+BASE_DIR = "/".join(abspath(__file__).split("/")[:-3])
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -21,13 +22,11 @@ BASE_DIR = '/'.join(abspath(__file__).split('/')[:-3])
 SECRET_KEY = "l^)ah3e42jh5*gx1v7hz6@xxrdu9zuwvo!psck0&wm3%+x1a+f"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = ENVIRONMENT == "development"
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['lektprojekt.com', '127.0.0.1']
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -35,19 +34,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'django.contrib.sites',
-
+    "django.contrib.sites",
     "django_extensions",
     "debug_toolbar",
-
     "rest_framework",
     "rest_framework.authtoken",
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
     "dj_rest_auth",
-    'dj_rest_auth.registration',
-
+    "dj_rest_auth.registration",
     "todos",
 ]
 
@@ -78,14 +74,14 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [join(BASE_DIR, "frontend", "build")]
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = "/"
 
 # Django Extensions settings
 SHELL_PLUS = "ipython"
-IPYTHON_ARGUMENTS = ['--nosep', '--classic']
+IPYTHON_ARGUMENTS = ["--nosep", "--classic"]
 
 # number of seconds to delay request for
 REQUEST_TIME_DELAY = 1
