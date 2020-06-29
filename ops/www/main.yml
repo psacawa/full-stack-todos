@@ -1,13 +1,17 @@
 ---
-- hosts: full_www
+- hosts: name_full_www
   become: true
   vars_files: 
     - ./vars.yml
+  environment: 
+    DJANGO_ENV: production
   pre_tasks:
     - name: update cache
       apt: update_cache=yes
   roles:
     - role: geerlingguy.firewall
+    - role: geerlingguy.nginx
+      tag: nginx
     - role: geerlingguy.postgresql
     - role: psacawa.dotpliki
       become: false
@@ -19,18 +23,17 @@
         state: present
     - name: create application folder
       file: 
-        path: "{{ application_path }}"
+        path: "{{ backend_path }}"
         state: directory
     - name: clone application repository
       git: 
         repo: "{{ git_repsitory_url }}"
-        dest: "{{ application_path }}"
-        force: yes
+        dest: "{{ backend_path }}"
     - name: install python deps to virtualenv
       pip:
-        chdir: "{{ application_path }}"
-        requirements: "{{ application_path }}/lekt/requirements.pip"
-        # virtualenv: "{{ application_path }}"
+        chdir: "{{ backend_path }}"
+        requirements: "{{ backend_path }}/lekt/requirements.pip"
+        # virtualenv: "{{ backend_path }}"
         # virtualenv_python: "{{ python_version }}"
       tags: pip
     - name: copy uwsgi config
@@ -47,6 +50,37 @@
         state: link
       tags: uwsgi
       notify: restart uwsgi
+    - name: Install node
+      # shell: "wget -qO- {{ nvm_install_url }} | bash"
+      shell: |
+        curl -sL {{ node_package_url }} | sudo -E bash -
+        sudo apt install -y nodejs
+        # creates: /usr/bin/node
+      tags: frontend
+    - name: Install frontend dependencies
+      npm: 
+        path: "{{ frontend_path }}"
+        production: true
+        ci: true
+      tags: frontend
+    - name: build frontend
+      command:
+        cmd: npm run build 
+        chdir: "{{ frontend_path }}"
+        creates: "{{ frontend_path }}/build/index.html"
+      tags: frontend
+    - name: Ensure nginx root exists
+      file:
+        path: "{{ static_root }}"
+        state: directory
+      tags: frontend
+      notify: restart nginx
+    - name: copy static files to nginx root
+      shell: "cp -r {{ frontend_path }}/build/* {{ static_root }}"
+      tags: frontend
+      notify: restart nginx
+
+
   handlers:
     - name: restart uwsgi
       service: 

@@ -1,55 +1,18 @@
----
+ansible_user: ubuntu
+
 ec2_instances:
   # - name: full_lb
   #   group: "full_lb-group"
   #   # security_group: ["default", "http"]
   - name: full_www
     group: "full_www_group"
-    # security_group: ["default", "http"]
-  # - name: full-db
-  #   group: "full-db-group"
-  #   # security_group: ["default", "db"]
-security_groups:
-  - name: www-sg
-    rules:
-      - proto: tcp
-        from_port: 80
-        to_port: 80
-        cidr_ip: 0.0.0.0/0
-      - proto: tcp
-        from_port: 22
-        to_port: 22
-        cidr_ip: 0.0.0.0/0
-    rules_egress: []
-
-  - name: db-sg
-    rules:
-      - proto: tcp
-        from_port: 3306
-        to_port: 3306
-        cidr_ip: 0.0.0.0/0
-      - proto: tcp
-        from_port: 22
-        to_port: 22
-        cidr_ip: 0.0.0.0/0
-    rules_egress: []
-
-  - name: lb-sg
-    rules:
-      - proto: tcp
-        from_port: 11211
-        to_port: 11211
-        cidr_ip: 0.0.0.0/0
-      - proto: tcp
-        from_port: 22
-        to_port: 22
-        cidr_ip: 0.0.0.0/0
-    rules_egress: []
 
 key_name: full_key
 aws_region: us-east-2
 # ami_id: ami-003634241a8fcdec0
 ami_id: ami-0a63f96e85105c6d3
 
-rds_password: mockpass
-rds_username: django
+domain_name: lektprojekt.com
+# ec2_instance_type: t3a.micro
+ec2_instance_type: t3a.xlarge
+# ec2_instance_type: a1.xlarge

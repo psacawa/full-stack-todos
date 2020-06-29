@@ -7,20 +7,38 @@ apt_packages:
   - virtualenv
   - libpq-dev
 
-
 # firewall
 firewall_allowed_tcp_ports:
   - 22
   - 80
 
+# nginx
+nginx_vhosts:
+  - server_name: todos
+    root: "{{ static_root }}"
+    index: index.html
+    extra_parameters: |
+      location ~ /api {
+        uwsgi_pass django;
+        include uwsgi_params;
+      }
+nginx_upstreams:
+  - name: django
+    servers:
+    - 127.0.0.1:8000
+nginx_remove_default_vhost: true
+
 # application
-application_path: /var/app
 git_repsitory_url: https://github.com/psacawa/full-stack-todos
 python_version: python3.7
 django_port: "8000"
-django_folder: "{{ application_path }}/lekt"
+backend_path: /var/app
 django_basename: lekt/wsgi.py
+django_folder: "{{ backend_path }}/lekt"
 django_file: "{{ django_folder }}/{{ django_basename }}"
+frontend_path: "{{ backend_path }}/lekt/frontend"
+node_package_url: https://deb.nodesource.com/setup_14.x 
+static_root: /var/www/static/
 
 # uwsgi
 uwsgi_folder: /etc/uwsgi
