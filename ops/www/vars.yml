@@ -1,3 +1,5 @@
+domain_name:  "lektprojekt.com"
+
 # packages
 apt_packages:
   - python3
@@ -6,15 +8,19 @@ apt_packages:
   - uwsgi-plugin-python3
   - virtualenv
   - libpq-dev
+  - certbot
+  - python3-certbot-nginx
 
 # firewall
 firewall_allowed_tcp_ports:
   - 22
   - 80
+  - 443
 
 # nginx
 nginx_vhosts:
-  - server_name: todos
+  - server_name: "{{ domain_name }}"
+    # server_name_redirect: "www.lektprojekt.com"
     root: "{{ static_root }}"
     index: index.html
     extra_parameters: |

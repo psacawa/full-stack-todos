@@ -5,3 +5,4 @@ socket = :{{ django_port }}
 ; socket = {{ uwsgi_unix_socket }} 
 chdir = {{ django_folder }}
 module = lekt.wsgi
+env = DJANGO_ENV=production

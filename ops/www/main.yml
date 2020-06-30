@@ -11,7 +11,6 @@
   roles:
     - role: geerlingguy.firewall
     - role: geerlingguy.nginx
-      tag: nginx
     - role: geerlingguy.postgresql
     - role: psacawa.dotpliki
       become: false
@@ -37,7 +36,7 @@
         requirements: "{{ backend_path }}/lekt/requirements.pip"
         # virtualenv: "{{ backend_path }}"
         # virtualenv_python: "{{ python_version }}"
-      tags: pip
+      tags: pip, backend
     - name: migrate database
       django_manage:
         app_path: "{{ backend_path }}/lekt"
@@ -62,13 +61,12 @@
       shell: |
         curl -sL {{ node_package_url }} | sudo -E bash -
         sudo apt install -y nodejs
-        # creates: /usr/bin/node
+      # creates: /usr/bin/node
       tags: frontend
     - name: Install frontend dependencies
       npm: 
         path: "{{ frontend_path }}"
         production: true
-        ci: true
       tags: frontend
     - name: build frontend
       command:
@@ -87,6 +85,12 @@
       shell: "cp -r {{ frontend_path }}/build/* {{ static_root }}"
       tags: frontend
       notify: restart nginx
+    - name: install let's encrypt certificate
+      command: | 
+        certbot -n --nginx --domain lektprojekt.com \
+        --keep-until-expiring --redirect
+      tags: certbot
+
 
   handlers:
     - name: restart uwsgi
