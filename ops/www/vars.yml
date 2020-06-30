@@ -1,4 +1,5 @@
 domain_name:  "lektprojekt.com"
+email_address: psacawa@math.toronto.edu
 
 # packages
 apt_packages:
