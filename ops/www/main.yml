@@ -66,7 +66,6 @@
     - name: Install frontend dependencies
       npm: 
         path: "{{ frontend_path }}"
-        production: true
       tags: frontend
     - name: build frontend
       command:
