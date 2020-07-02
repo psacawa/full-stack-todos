@@ -66,7 +66,7 @@ function* logoutFlow() {
       yield api.logout();
       yield put(logout.success());
     } catch (error) {
-      yield logout.failure(error.message);
+      yield put(logout.failure(error.message));
     }
   }
 }
