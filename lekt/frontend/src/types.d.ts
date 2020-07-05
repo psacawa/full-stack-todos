@@ -8,8 +8,20 @@ export interface TodoData {
 export type Todo = Required<TodoData>;
 export type TodoState = Todo[];
 
-export interface DisplayState {
+export interface TodoDisplayState {
   isFetching: boolean;
+}
+export interface LoginDisplayState {
+  serverErrors: string[];
+}
+export interface CreateAccountDisplayState {
+  serverErrors: string[];
+}
+
+export interface DisplayState {
+  todo: TodoDisplayState;
+  login: LoginDisplayState;
+  createAccount: CreateAccountDisplayState;
 }
 
 interface CreateAccountData {

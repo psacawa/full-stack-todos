@@ -1,10 +1,18 @@
 import { call, all, takeEvery, put, take, fork, cancel } from "redux-saga/effects";
 import { Task } from "redux-saga";
 import { addTodo, removeTodo, fetchTodos, login, logout, createAccount } from "./actions";
-import { TodoState, Todo, LoginData, AuthData, User } from "@src/types";
+import {
+  TodoState,
+  Todo,
+  LoginData,
+  AuthData,
+  User,
+  CreateAccountData
+} from "@src/types";
 import * as api from "./services";
 import axios from "axios";
 import { ActionType, getType, RootAction } from "typesafe-actions";
+import { flatten } from "lodash";
 
 function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {
   try {
@@ -72,6 +80,7 @@ function* logoutFlow() {
 }
 
 function* createAccountSaga(action: ActionType<typeof createAccount.request>) {
+  let error: number;
   try {
     const accountData = action.payload;
     yield call(api.createAccount, action.payload);
@@ -82,7 +91,10 @@ function* createAccountSaga(action: ActionType<typeof createAccount.request>) {
     };
     yield put(login.request(loginData));
   } catch (error) {
-    yield put(createAccount.failure(error.message));
+    const errors: Record<keyof CreateAccountData, string[]> = error.response.data;
+    const serverErrors = flatten(Object.values(errors));
+    console.error(serverErrors);
+    yield put(createAccount.failure(serverErrors));
   }
 }
 

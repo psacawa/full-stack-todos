@@ -7,7 +7,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 const mapStateToProps = (state: RootState) => ({
   todos: todosSelector(state),
-  isFetching: state.display.isFetching
+  isFetching: state.display.todos.isFetching
 });
 const dispatchProps = {
   removeTodo: removeTodo.request,

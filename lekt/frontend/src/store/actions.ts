@@ -24,13 +24,13 @@ export const createAccount = createAsyncAction(
   "CREATE_ACCOUNT_REQUEST",
   "CREATE_ACCOUNT_SUCCESS",
   "CREATE_ACCOUNT_FAILURE"
-)<CreateAccountData, undefined, string>();
+)<CreateAccountData, undefined, string[]>();
 
 export const login = createAsyncAction(
   "LOGIN_REQUEST", 
   "LOGIN_SUCCESS", 
   "LOGIN_FAILURE"
-)< LoginData, User, string>();
+)< LoginData, User, string[]>();
 
 export const logout = createAsyncAction(
   "LOGOUT_REQUEST",
@@ -39,5 +39,5 @@ export const logout = createAsyncAction(
 )<undefined, undefined, string>();
 
 export const todoAction = { addTodo, removeTodo, fetchTodos };
-export const authAction = { login, logout };
-export default { todoAction, authAction };
+export const accountAction = { login, logout, createAccount };
+export default { todoAction, accountAction };
