@@ -1,4 +1,4 @@
-import { call, all, takeEvery, put, take, fork, cancel } from "redux-saga/effects";
+import { call, all, takeEvery, put, take, fork, cancel, delay } from "redux-saga/effects";
 import { Task } from "redux-saga";
 import { addTodo, removeTodo, fetchTodos, login, logout, createAccount } from "./actions";
 import {
@@ -80,21 +80,25 @@ function* logoutFlow() {
 }
 
 function* createAccountSaga(action: ActionType<typeof createAccount.request>) {
-  let error: number;
+  const accountData = action.payload;
+  const { setSubmitting } = action.meta;
+  const loginData: LoginData = {
+    username: accountData.username,
+    password: accountData.password1
+  };
   try {
-    const accountData = action.payload;
+    // setSubmitting(true)
+    yield delay(1000)
     yield call(api.createAccount, action.payload);
     yield put(createAccount.success());
-    const loginData: LoginData = {
-      username: accountData.username,
-      password: accountData.password1
-    };
     yield put(login.request(loginData));
   } catch (error) {
     const errors: Record<keyof CreateAccountData, string[]> = error.response.data;
     const serverErrors = flatten(Object.values(errors));
     console.error(serverErrors);
     yield put(createAccount.failure(serverErrors));
+  } finally {
+    setSubmitting (false)
   }
 }
 

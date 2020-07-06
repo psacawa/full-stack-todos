@@ -1,6 +1,7 @@
 import { createAsyncAction } from "typesafe-actions";
 import { Todo, TodoData, User } from "@src/types";
 import { CreateAccountData, LoginData } from "../types";
+import { FormikHelpers } from "formik";
 
 export const addTodo = createAsyncAction(
   "ADD_TODO_REQUEST",
@@ -24,7 +25,7 @@ export const createAccount = createAsyncAction(
   "CREATE_ACCOUNT_REQUEST",
   "CREATE_ACCOUNT_SUCCESS",
   "CREATE_ACCOUNT_FAILURE"
-)<CreateAccountData, undefined, string[]>();
+)<[CreateAccountData, FormikHelpers <any>], undefined, string[]>();
 
 export const login = createAsyncAction(
   "LOGIN_REQUEST", 

@@ -1,11 +1,13 @@
 import React, { useCallback } from "react";
-import { Formik, Field, Form } from "formik";
+import { Formik, Field, Form, FormikHelpers } from "formik";
 import { useDispatch, useSelector } from "react-redux";
+import { loggedInSelector } from "../store/selectors";
 import { createAccount } from "../store/actions";
 import { CreateAccountData, RootState } from "../types";
 import { TextField } from "formik-material-ui";
-import { Typography, FormHelperText } from "@material-ui/core";
+import { Typography, FormHelperText, Button, makeStyles } from "@material-ui/core";
 import * as yup from "yup";
+import { Redirect } from "react-router-dom";
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -29,18 +31,28 @@ const validationSchema = yup.object().shape({
     .email("Enter a valid email address.")
 });
 
-// const matStateToProps
+const useStyles = makeStyles({
+  submitButton: {
+    margin: "10px"
+  }
+});
 
 export default () => {
+  const classes = useStyles();
+  const loggedIn = useSelector(loggedInSelector);
   const dispatch = useDispatch();
   const createAccountCallback = useCallback(
-    (values: CreateAccountData) => dispatch(createAccount.request(values)),
+    (values: CreateAccountData, bag: FormikHelpers<any>) =>
+      dispatch(createAccount.request(values, bag)),
     [dispatch]
   );
   const serverErrors = useSelector(
     (state: RootState) => state.display.account.serverErrors
   );
-  return (
+  // const isFetching = useSelector((state: RootState) => state.display.account.isFetching);
+  return loggedIn ? (
+    <Redirect to="/" />
+  ) : (
     <>
       <Typography variant="h5">Create New Account</Typography>
       <Formik
@@ -51,8 +63,8 @@ export default () => {
           email: ""
         }}
         validationSchema={validationSchema}
-        onSubmit={values => {
-          createAccountCallback(values);
+        onSubmit={(values, bag) => {
+          createAccountCallback(values, bag);
         }}
       >
         <Form>
@@ -78,12 +90,14 @@ export default () => {
           <div>
             <Field component={TextField} type="email" label="Email" name="email" />
           </div>
-          <input type="submit" value="Create Account" name="" id="" />
+          {serverErrors.map(error => (
+            <FormHelperText error>{error}</FormHelperText>
+          ))}
+          <Button className={classes.submitButton} variant="outlined" type="submit">
+            Submit
+          </Button>
         </Form>
       </Formik>
-      {serverErrors.map(error => (
-        <FormHelperText error>{error}</FormHelperText>
-      ))}
     </>
   );
 };

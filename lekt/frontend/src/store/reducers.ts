@@ -37,18 +37,30 @@ const todoDisplayReducer = createReducer<TodoDisplayState, RootAction>({
   );
 
 const loginDisplayReducer = createReducer<LoginDisplayState, RootAction>({
-  serverErrors: []
+  serverErrors: [],
+  isFetching: false
 });
 const createAccountDisplayReducer = createReducer<CreateAccountDisplayState, RootAction>({
-  serverErrors: []
-}).handleAction(createAccount.failure, (state, action) => ({
-  serverErrors: action.payload
-}));
+  serverErrors: [],
+  isFetching: false
+})
+  .handleAction(createAccount.request, (state, action) => ({
+    serverErrors: [],
+    isFetching: true
+  }))
+  .handleAction(createAccount.failure, (state, action) => ({
+    serverErrors: action.payload,
+    isFetching: false
+  }))
+  .handleAction(createAccount.success, (state, action) => ({
+    serverErrors: [],
+    isFetching: false
+  }));
 
 const displayReducer = combineReducers({
   todos: todoDisplayReducer,
   login: loginDisplayReducer,
-  account: createAccountDisplayReducer,
+  account: createAccountDisplayReducer
 });
 
 const authReducer = createReducer<UserState, RootAction>({

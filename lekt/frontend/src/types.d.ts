@@ -12,9 +12,11 @@ export interface TodoDisplayState {
   isFetching: boolean;
 }
 export interface LoginDisplayState {
+  isFetching: boolean;
   serverErrors: string[];
 }
 export interface CreateAccountDisplayState {
+  isFetching: boolean;
   serverErrors: string[];
 }
 
