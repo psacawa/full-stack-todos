@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { createReducer, RootAction, getType } from "typesafe-actions";
 import { combineReducers } from "redux";
 import {

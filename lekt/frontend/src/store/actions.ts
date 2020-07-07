@@ -1,5 +1,5 @@
 import { createAsyncAction } from "typesafe-actions";
-import { Todo, TodoData, User, LoginSuccessPayload } from "@src/types";
+import { Todo, TodoData, LoginSuccessPayload } from "@src/types";
 import { CreateAccountData, LoginData } from "../types";
 import { FormikHelpers } from "formik";
 
