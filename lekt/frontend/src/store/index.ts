@@ -5,6 +5,7 @@ import { createLogger } from "redux-logger";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import rootSaga from "./sagas";
+import axios from 'axios';
 
 const persistConfig = {
   key: "root",
@@ -18,7 +19,13 @@ const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const middlewares = applyMiddleware(sagaMiddleware, logger);
 const enhancer = composeEnhancer(middlewares);
 export const store = createStore(persistedReducer, enhancer);
-export const persistor = persistStore(store);
+export const persistor = persistStore(store, null, () => {
+
+  const key = store.getState().auth.key
+  if (key) {
+    axios.defaults.headers.common["Authorization"] = `Token ${key}`;
+  }
+});
 sagaMiddleware.run(rootSaga);
 
 export default store;

@@ -1,5 +1,5 @@
 import { createAsyncAction } from "typesafe-actions";
-import { Todo, TodoData, User } from "@src/types";
+import { Todo, TodoData, User, LoginSuccessPayload } from "@src/types";
 import { CreateAccountData, LoginData } from "../types";
 import { FormikHelpers } from "formik";
 
@@ -31,7 +31,7 @@ export const login = createAsyncAction(
   "LOGIN_REQUEST", 
   "LOGIN_SUCCESS", 
   "LOGIN_FAILURE"
-)< [LoginData, FormikHelpers<any> | undefined], User, string[]>();
+)< [LoginData, FormikHelpers<any> | undefined], LoginSuccessPayload, string[]>();
 
 export const logout = createAsyncAction(
   "LOGOUT_REQUEST",

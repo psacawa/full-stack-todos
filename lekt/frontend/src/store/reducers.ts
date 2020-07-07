@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { createReducer, RootAction, getType } from "typesafe-actions";
 import { combineReducers } from "redux";
 import {
@@ -79,8 +80,9 @@ const authReducer = createReducer<UserState, RootAction>({
   loggedIn: false
 })
   .handleAction(login.success, (state, action) => ({
-    user: action.payload,
-    loggedIn: true
+    user: action.payload.user,
+    key: action.payload.key,
+    loggedIn: true,
   }))
   .handleAction(logout.success, (state, action) => ({ loggedIn: false }));
 

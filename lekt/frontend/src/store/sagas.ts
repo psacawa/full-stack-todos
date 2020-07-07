@@ -62,11 +62,10 @@ function* loginFlow() {
 function* authenticate(values: LoginData, bag?: FormikHelpers<any>) {
   try {
     const authData: AuthData = yield call(api.login, values);
-    // przenieś gdzie indziej
-    axios.defaults.headers.common["Authorization"] = `Token ${authData.key}`;
-    localStorage.setItem("key", authData.key);
+    const { key } = authData;
+    axios.defaults.headers.common["Authorization"] = `Token ${key}`;
     const user: User = yield call(api.fetchUser);
-    yield put(login.success(user));
+    yield put(login.success({ user, key }));
     yield put(fetchTodos.request());
   } catch (error) {
     const serverErrors: string[] = flatten(Object.values(error.response.data));

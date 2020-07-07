@@ -48,9 +48,14 @@ interface User {
   email: string;
 }
 
-interface UserState extends Optional <AuthData> {
+interface LoginSuccessPayload extends AuthData {
+  user: User;
+}
+
+interface UserState {
   loggedIn: boolean;
-  user?: User,
+  user?: User;
+  key?: string;
 }
 
 export type RootState = StateType<typeof import("@src/store/reducers").default>;
