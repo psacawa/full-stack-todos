@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Formik, Field, Form } from "formik";
 import { addTodo } from "../store/actions";
 import { connect } from "react-redux";
+import { Button, Typography } from "@material-ui/core";
+import { TextField } from "formik-material-ui";
+import * as yup from "yup";
 
 let dispatchProps = {
   addTodo: addTodo.request
@@ -14,19 +17,24 @@ class TodoForm extends Component<Props, {}> {
     const { addTodo } = this.props;
     return (
       <>
-        <h4>Submit new Todo</h4>
+        <Typography variant="h6">Submit new Todo</Typography>
         <Formik
           initialValues={{ text: "", author: "", other: "" }}
-          onSubmit={values => {
-            addTodo(values);
+          validationSchema={yup.object().shape({
+            text: yup
+              .string()
+              .required()
+              .label("Text")
+          })}
+          onSubmit={(values, bag) => {
+            addTodo(values, bag);
           }}
         >
           <Form>
-            <p>
-              <label htmlFor="text">Text: </label>
-              <Field name="text" type="text" />{" "}
-            </p>
-            <input type="submit" value="Submit"></input>
+            <Field component={TextField} label="Todo" name="text" type="text" />
+            <div>
+              <Button type="submit">Submit</Button>
+            </div>
           </Form>
         </Formik>
       </>
