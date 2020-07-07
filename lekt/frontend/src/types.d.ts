@@ -3,7 +3,6 @@ import { StateType } from "typesafe-actions";
 export interface TodoData {
   id?: number;
   text: string;
-  author: string;
 }
 export type Todo = Required<TodoData>;
 export type TodoState = Todo[];

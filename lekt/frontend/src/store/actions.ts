@@ -7,7 +7,7 @@ export const addTodo = createAsyncAction(
   "ADD_TODO_REQUEST",
   "ADD_TODO_SUCCESS",
   "ADD_TODO_FAILURE"
-)<TodoData, Todo, string>();
+)<[TodoData, FormikHelpers<any>], Todo, string>();
 
 export const removeTodo = createAsyncAction(
   "REMOVE_TODO_REQUEST",
@@ -25,13 +25,13 @@ export const createAccount = createAsyncAction(
   "CREATE_ACCOUNT_REQUEST",
   "CREATE_ACCOUNT_SUCCESS",
   "CREATE_ACCOUNT_FAILURE"
-)<[CreateAccountData, FormikHelpers <any>], undefined, string[]>();
+)<[CreateAccountData, FormikHelpers<any>], undefined, string[]>();
 
 export const login = createAsyncAction(
   "LOGIN_REQUEST", 
   "LOGIN_SUCCESS", 
   "LOGIN_FAILURE"
-)< LoginData, User, string[]>();
+)< [LoginData, FormikHelpers<any> | undefined], User, string[]>();
 
 export const logout = createAsyncAction(
   "LOGOUT_REQUEST",

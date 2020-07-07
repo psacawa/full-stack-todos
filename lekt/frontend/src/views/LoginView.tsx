@@ -4,20 +4,44 @@ import { Formik, Form, Field } from "formik";
 import { RootState } from "../types";
 import { login } from "../store/actions";
 import { connect } from "react-redux";
+import * as yup from "yup";
+import { Button, withStyles, WithStyles, FormHelperText } from "@material-ui/core";
+import { TextField } from "formik-material-ui";
+
+const validationSchema = yup.object().shape({
+  username: yup
+    .string()
+    .required()
+    .label("Username"),
+  password: yup
+    .string()
+    .required()
+    .label("Password")
+});
+
+const styles = {
+  submitButton: {
+    margin: "10px"
+  }
+};
 
 const mapStateToProps = (state: RootState) => ({
-  loggedIn: state.auth.loggedIn
+  loggedIn: state.auth.loggedIn,
+  serverErrors: state.display.login.serverErrors
 });
 
 const dispatchProps = {
   login: login.request
 };
 
-type Props = ReturnType<typeof mapStateToProps> & typeof dispatchProps;
+type Props = WithStyles<typeof styles> &
+  ReturnType<typeof mapStateToProps> &
+  typeof dispatchProps;
 
 class LoginView extends Component<Props> {
   render() {
-    const { login, loggedIn } = this.props;
+    const { login, loggedIn, serverErrors } = this.props;
+    const classes = this.props.classes;
     return loggedIn ? (
       <Redirect to="/" />
     ) : (
@@ -28,20 +52,29 @@ class LoginView extends Component<Props> {
             username: "",
             password: ""
           }}
-          onSubmit={values => {
-            login(values);
+          validationSchema={validationSchema}
+          onSubmit={(values, bag) => {
+            login(values, bag);
           }}
         >
           <Form>
-            <p>
-              <label htmlFor="username">Username: </label>
-              <Field type="text" name="username" />
-            </p>
-            <p>
-              <label htmlFor="password">Password: </label>
-              <Field type="password" name="password" />
-            </p>
-            <input type="submit" value="Submit" name="" id="" />
+            <div>
+              <Field component={TextField} label="Username" type="text" name="username" />
+            </div>
+            <div>
+              <Field
+                component={TextField}
+                label="Password"
+                type="password"
+                name="password"
+              />
+            </div>
+            {serverErrors.map(error => (
+              <FormHelperText error>{error}</FormHelperText>
+            ))}
+            <Button className={classes.submitButton} variant="outlined" type="submit">
+              Submit
+            </Button>
           </Form>
         </Formik>
       </>
@@ -49,4 +82,4 @@ class LoginView extends Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, dispatchProps)(LoginView);
+export default connect(mapStateToProps, dispatchProps)(withStyles(styles)(LoginView));

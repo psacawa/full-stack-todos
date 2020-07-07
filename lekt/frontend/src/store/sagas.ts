@@ -13,13 +13,18 @@ import * as api from "./services";
 import axios from "axios";
 import { ActionType, getType, RootAction } from "typesafe-actions";
 import { flatten } from "lodash";
+import { FormikHelpers } from "formik";
 
 function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {
+  const { setSubmitting, resetForm } = action.meta;
   try {
     const data: Todo = yield call(api.addTodo, action.payload);
     yield put(addTodo.success(data));
   } catch (error) {
     yield put(addTodo.failure(`addTodo failed ${error}`));
+  } finally {
+    setSubmitting(false);
+    resetForm();
   }
 }
 
@@ -44,7 +49,7 @@ function* fetchTodosSaga(action: ReturnType<typeof fetchTodos.request>) {
 function* loginFlow() {
   while (true) {
     const loginAction: ActionType<typeof login.request> = yield take(login.request);
-    const task: Task = yield fork(authenticate, loginAction.payload);
+    const task: Task = yield fork(authenticate, loginAction.payload, loginAction.meta);
     const logoutAction: RootAction = yield take([logout.success, login.failure]);
     if (logoutAction.type === getType(logout.request)) {
       yield cancel(task);
@@ -54,16 +59,22 @@ function* loginFlow() {
   }
 }
 
-function* authenticate(values: LoginData) {
+function* authenticate(values: LoginData, bag?: FormikHelpers<any>) {
   try {
     const authData: AuthData = yield call(api.login, values);
+    // przenieś gdzie indziej
     axios.defaults.headers.common["Authorization"] = `Token ${authData.key}`;
     localStorage.setItem("key", authData.key);
     const user: User = yield call(api.fetchUser);
     yield put(login.success(user));
     yield put(fetchTodos.request());
   } catch (error) {
-    yield put(login.failure(error.message));
+    const serverErrors: string[] = flatten(Object.values(error.response.data));
+    yield delay(500);
+    yield put(login.failure(serverErrors));
+    if (bag) {
+      bag.setSubmitting(false);
+    }
   }
 }
 
@@ -88,17 +99,17 @@ function* createAccountSaga(action: ActionType<typeof createAccount.request>) {
   };
   try {
     // setSubmitting(true)
-    yield delay(1000)
+    yield delay(1000);
     yield call(api.createAccount, action.payload);
     yield put(createAccount.success());
-    yield put(login.request(loginData));
+    yield put(login.request(loginData, undefined));
   } catch (error) {
     const errors: Record<keyof CreateAccountData, string[]> = error.response.data;
     const serverErrors = flatten(Object.values(errors));
     console.error(serverErrors);
     yield put(createAccount.failure(serverErrors));
   } finally {
-    setSubmitting (false)
+    setSubmitting(false);
   }
 }
 

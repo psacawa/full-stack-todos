@@ -39,7 +39,19 @@ const todoDisplayReducer = createReducer<TodoDisplayState, RootAction>({
 const loginDisplayReducer = createReducer<LoginDisplayState, RootAction>({
   serverErrors: [],
   isFetching: false
-});
+})
+  .handleAction(login.request, (state, action) => ({
+    serverErrors: [],
+    isFetching: true
+  }))
+  .handleAction(login.failure, (state, action) => ({
+    serverErrors: action.payload,
+    isFetching: false
+  }))
+  .handleAction(login.success, (state, action) => ({
+    serverErrors: [],
+    isFetching: false
+  }));
 const createAccountDisplayReducer = createReducer<CreateAccountDisplayState, RootAction>({
   serverErrors: [],
   isFetching: false
