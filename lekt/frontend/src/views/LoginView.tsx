@@ -5,7 +5,7 @@ import { RootState } from "../types";
 import { login } from "../store/actions";
 import { connect } from "react-redux";
 import * as yup from "yup";
-import { Button, withStyles, WithStyles, FormHelperText } from "@material-ui/core";
+import { Button, withStyles, WithStyles, FormHelperText, Typography } from "@material-ui/core";
 import { TextField } from "formik-material-ui";
 
 const validationSchema = yup.object().shape({
@@ -46,7 +46,7 @@ class LoginView extends Component<Props> {
       <Redirect to="/" />
     ) : (
       <>
-        <h3>Login</h3>
+        <Typography variant="h5">Login</Typography>
         <Formik
           initialValues={{
             username: "",
