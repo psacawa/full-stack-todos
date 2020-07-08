@@ -90,8 +90,10 @@ export default () => {
           <div>
             <Field component={TextField} type="email" label="Email" name="email" />
           </div>
-          {serverErrors.map(error => (
-            <FormHelperText error>{error}</FormHelperText>
+          {serverErrors.map((error, idx) => (
+            <FormHelperText key={idx} error>
+              {error}
+            </FormHelperText>
           ))}
           <Button className={classes.submitButton} variant="outlined" type="submit">
             Submit

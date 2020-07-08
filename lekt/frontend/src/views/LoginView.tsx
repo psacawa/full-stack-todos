@@ -5,7 +5,13 @@ import { RootState } from "../types";
 import { login } from "../store/actions";
 import { connect } from "react-redux";
 import * as yup from "yup";
-import { Button, withStyles, WithStyles, FormHelperText, Typography } from "@material-ui/core";
+import {
+  Button,
+  withStyles,
+  WithStyles,
+  FormHelperText,
+  Typography
+} from "@material-ui/core";
 import { TextField } from "formik-material-ui";
 
 const validationSchema = yup.object().shape({
@@ -69,8 +75,10 @@ class LoginView extends Component<Props> {
                 name="password"
               />
             </div>
-            {serverErrors.map(error => (
-              <FormHelperText error>{error}</FormHelperText>
+            {serverErrors.map((error, idx) => (
+              <FormHelperText key={idx} error>
+                {error}
+              </FormHelperText>
             ))}
             <Button className={classes.submitButton} variant="outlined" type="submit">
               Submit

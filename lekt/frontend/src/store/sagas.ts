@@ -54,8 +54,6 @@ function* loginFlow() {
     if (logoutAction.type === getType(logout.request)) {
       yield cancel(task);
     }
-    localStorage.removeItem("key");
-    delete axios.defaults.headers.common["Authorization"];
   }
 }
 
@@ -85,6 +83,8 @@ function* logoutFlow() {
       yield put(logout.success());
     } catch (error) {
       yield put(logout.failure(error.message));
+    } finally {
+      delete axios.defaults.headers.common["Authorization"];
     }
   }
 }
