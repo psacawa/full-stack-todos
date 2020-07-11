@@ -76,12 +76,3 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [join(BASE_DIR, "frontend", "build")]
-
-LOGIN_REDIRECT_URL = "/"
-
-# Django Extensions settings
-SHELL_PLUS = "ipython"
-IPYTHON_ARGUMENTS = ["--nosep", "--classic"]
-
-# number of seconds to delay request for
-REQUEST_TIME_DELAY = 1

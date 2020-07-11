@@ -93,7 +93,7 @@ function* createAccountSaga(action: ActionType<typeof createAccount.request>) {
   const accountData = action.payload;
   const { setSubmitting } = action.meta;
   const loginData: LoginData = {
-    username: accountData.username,
+    email: accountData.email,
     password: accountData.password1
   };
   try {
@@ -101,7 +101,7 @@ function* createAccountSaga(action: ActionType<typeof createAccount.request>) {
     yield delay(1000);
     yield call(api.createAccount, action.payload);
     yield put(createAccount.success());
-    yield put(login.request(loginData, undefined));
+    // yield put(login.request(loginData, undefined));
   } catch (error) {
     const errors: Record<keyof CreateAccountData, string[]> = error.response.data;
     const serverErrors = flatten(Object.values(errors));

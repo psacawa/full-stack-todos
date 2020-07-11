@@ -14,6 +14,7 @@ base_patterns = [
     "api.py",
     "database.py",
     "logging.py",
+    "extra.py",
     f'{ENVIRONMENT}.py',
 ]
 

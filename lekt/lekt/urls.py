@@ -21,16 +21,27 @@ from django.conf import settings
 from django.conf.urls.static import static
 from os.path import join
 from .views import csrf_view
+from dj_rest_auth.registration.views import VerifyEmailView
+from allauth.account.views import ConfirmEmailView,  EmailVerificationSentView
 
 urlpatterns = [
-    path(r'admin/', admin.site.urls),
-    path(r'api/', include ('todos.urls')),
-    path(r'auth/', include ('dj_rest_auth.urls')),
-    path(r'auth/registration/', include ('dj_rest_auth.registration.urls')),
+    path(r"admin/", admin.site.urls),
+    path(r"api/", include("todos.urls")),
+    path(r"auth/", include("dj_rest_auth.urls")),
+    path(r"auth/registration/", include("dj_rest_auth.registration.urls")),
+    re_path(
+        r"^auth/confirm-email/(?P<key>[-:\w]+)/$",
+        ConfirmEmailView.as_view(),
+        name="account_confirm_email",
+    ),
+    path(
+        "auth/confirm-email/",
+        EmailVerificationSentView.as_view(),
+        name="account_email_verification_sent",
+    )
 ]
 
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns = [
-        path("__debug__", include(debug_toolbar.urls)),
-    ] + urlpatterns
+
+    urlpatterns = [path("__debug__", include(debug_toolbar.urls)),] + urlpatterns

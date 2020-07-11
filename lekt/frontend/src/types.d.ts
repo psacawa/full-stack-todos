@@ -32,7 +32,7 @@ interface CreateAccountData {
   email: string;
 }
 interface LoginData {
-  username: string;
+  email: string;
   password: string;
 }
 

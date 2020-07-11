@@ -15,10 +15,10 @@ import {
 import { TextField } from "formik-material-ui";
 
 const validationSchema = yup.object().shape({
-  username: yup
+  email: yup
     .string()
     .required()
-    .label("Username"),
+    .label("Email"),
   password: yup
     .string()
     .required()
@@ -55,7 +55,7 @@ class LoginView extends Component<Props> {
         <Typography variant="h5">Login</Typography>
         <Formik
           initialValues={{
-            username: "",
+            email: "",
             password: ""
           }}
           validationSchema={validationSchema}
@@ -65,7 +65,7 @@ class LoginView extends Component<Props> {
         >
           <Form>
             <div>
-              <Field component={TextField} label="Username" type="text" name="username" />
+              <Field component={TextField} label="Email" type="text" name="email" />
             </div>
             <div>
               <Field
