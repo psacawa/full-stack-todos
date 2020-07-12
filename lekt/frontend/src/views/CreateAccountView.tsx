@@ -72,6 +72,9 @@ class CreateAccoutView extends Component<Props, State> {
   handleSuccessClose = () => {
     this.setState({ requestSucceededDialogOpen: false });
   };
+  handleFailureClose = () => {
+    this.setState({ requestFailedDialogOpen: false });
+  };
   handleLoginRedirectClick = () => {
     this.setState({ redirect: "/login" });
   };
@@ -111,7 +114,7 @@ class CreateAccoutView extends Component<Props, State> {
                   const errors: string[] = flatten(Object.values(error.response.data));
                   this.setState({ serverSideErrors: errors });
                 } else {
-                  this.setState({ serverSideErrors: ["Request failed"] });
+                  this.setState({ serverSideErrors: [], requestFailedDialogOpen: true });
                 }
               });
           }}
@@ -167,10 +170,15 @@ class CreateAccoutView extends Component<Props, State> {
           </DialogContent>
         </Dialog>
         <Dialog open={requestFailedDialogOpen}>
-          <DialogContentText>Request failed</DialogContentText>
-          <DialogActions>
-            <Button>Goto Login Page</Button>
-          </DialogActions>
+          <DialogContent>
+            <DialogTitle>Request failed</DialogTitle>
+            <DialogContentText>Check your network connection status...</DialogContentText>
+            <DialogActions>
+              <Button onClick={this.handleFailureClose} autoFocus color="primary">
+                Continue
+              </Button>
+            </DialogActions>
+          </DialogContent>
         </Dialog>
       </>
     );
