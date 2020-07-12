@@ -1,13 +1,25 @@
-import React, { useCallback } from "react";
+import React, { Component } from "react";
 import { Formik, Field, Form, FormikHelpers } from "formik";
-import { useDispatch, useSelector } from "react-redux";
-import { loggedInSelector } from "../store/selectors";
+import { connect } from "react-redux";
 import { createAccount } from "../store/actions";
 import { CreateAccountData, RootState } from "../types";
 import { TextField } from "formik-material-ui";
-import { Typography, FormHelperText, Button, makeStyles } from "@material-ui/core";
+import {
+  DialogContentText,
+  FormHelperText,
+  Button,
+  withStyles,
+  createStyles,
+  WithStyles,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle
+} from "@material-ui/core";
 import * as yup from "yup";
 import { Redirect } from "react-router-dom";
+import axios, { AxiosResponse, AxiosError } from "axios";
+import { flatten } from "lodash";
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -31,75 +43,137 @@ const validationSchema = yup.object().shape({
     .email("Enter a valid email address.")
 });
 
-const useStyles = makeStyles({
+const classes = createStyles({
   submitButton: {
     margin: "10px"
   }
 });
 
-export default () => {
-  const classes = useStyles();
-  const loggedIn = useSelector(loggedInSelector);
-  const dispatch = useDispatch();
-  const createAccountCallback = useCallback(
-    (values: CreateAccountData, bag: FormikHelpers<any>) =>
-      dispatch(createAccount.request(values, bag)),
-    [dispatch]
-  );
-  const serverErrors = useSelector(
-    (state: RootState) => state.display.account.serverErrors
-  );
-  // const isFetching = useSelector((state: RootState) => state.display.account.isFetching);
-  return loggedIn ? (
-    <Redirect to="/" />
-  ) : (
-    <>
-      <Typography variant="h5">Create New Account</Typography>
-      <Formik
-        initialValues={{
-          username: "",
-          password1: "",
-          password2: "",
-          email: ""
-        }}
-        validationSchema={validationSchema}
-        onSubmit={(values, bag) => {
-          createAccountCallback(values, bag);
-        }}
-      >
-        <Form>
-          <div>
-            <Field component={TextField} label="Username" type="text" name="username" />
-          </div>
-          <div>
-            <Field
-              component={TextField}
-              label="Password"
-              type="password"
-              name="password1"
-            />
-          </div>
-          <div>
-            <Field
-              component={TextField}
-              label="Repeat Password"
-              type="password"
-              name="password2"
-            />
-          </div>
-          <div>
-            <Field component={TextField} type="email" label="Email" name="email" />
-          </div>
-          {serverErrors.map((error, idx) => (
-            <FormHelperText key={idx} error>
-              {error}
-            </FormHelperText>
-          ))}
-          <Button className={classes.submitButton} variant="outlined" type="submit">
-            Submit
-          </Button>
-        </Form>
-      </Formik>
-    </>
-  );
-};
+const mapStateToProps = (state: RootState) => ({
+  loggedIn: state.auth.loggedIn
+});
+type Props = ReturnType<typeof mapStateToProps> & WithStyles<typeof classes>;
+interface State {
+  requestFailedDialogOpen: boolean;
+  requestSucceededDialogOpen: boolean;
+  serverSideErrors: string[];
+  redirect?: string;
+}
+
+class CreateAccoutView extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      requestFailedDialogOpen: false,
+      requestSucceededDialogOpen: false,
+      serverSideErrors: []
+    };
+  }
+  handleSuccessClose = () => {
+    this.setState({ requestSucceededDialogOpen: false });
+  };
+  handleLoginRedirectClick = () => {
+    this.setState({ redirect: "/login" });
+  };
+  render() {
+    const { loggedIn, classes } = this.props;
+    const {
+      serverSideErrors,
+      requestFailedDialogOpen,
+      requestSucceededDialogOpen,
+      redirect
+    } = this.state;
+    return loggedIn ? (
+      <Redirect to="/" />
+    ) : redirect ? (
+      <Redirect to={redirect} />
+    ) : (
+      <>
+        <DialogContentText variant="h5">Create New Account</DialogContentText>
+        <Formik
+          initialValues={{
+            username: "",
+            password1: "",
+            password2: "",
+            email: ""
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(values, bag) => {
+            // createAccountCallback(values, bag);
+            return axios
+              .post("/auth/registration/", values)
+              .then(response => {
+                this.setState({ serverSideErrors: [], requestSucceededDialogOpen: true });
+              })
+              .catch((error: AxiosError<any>) => {
+                if (error.response) {
+                  console.log(error.response);
+                  const errors: string[] = flatten(Object.values(error.response.data));
+                  this.setState({ serverSideErrors: errors });
+                } else {
+                  this.setState({ serverSideErrors: ["Request failed"] });
+                }
+              });
+          }}
+        >
+          <Form>
+            <div>
+              <Field component={TextField} label="Username" type="text" name="username" />
+            </div>
+            <div>
+              <Field
+                component={TextField}
+                label="Password"
+                type="password"
+                name="password1"
+              />
+            </div>
+            <div>
+              <Field
+                component={TextField}
+                label="Repeat Password"
+                type="password"
+                name="password2"
+              />
+            </div>
+            <div>
+              <Field component={TextField} type="email" label="Email" name="email" />
+            </div>
+            {serverSideErrors.map((error, idx) => (
+              <FormHelperText key={idx} error>
+                {error}
+              </FormHelperText>
+            ))}
+            <Button className={classes.submitButton} variant="outlined" type="submit">
+              Submit
+            </Button>
+          </Form>
+        </Formik>
+        <Dialog open={requestSucceededDialogOpen}>
+          <DialogContent>
+            <DialogTitle>Confirmation Email Sent</DialogTitle>
+            <DialogContentText>
+              A confirmation email has been sent and should arrive within five minutes. It
+              contains a link to confirm your email address.{" "}
+            </DialogContentText>
+            <DialogActions>
+              <Button onClick={this.handleLoginRedirectClick} color="primary">
+                Goto Login Page
+              </Button>
+              <Button onClick={this.handleSuccessClose} autoFocus color="primary">
+                Continue
+              </Button>
+            </DialogActions>
+          </DialogContent>
+        </Dialog>
+        <Dialog open={requestFailedDialogOpen}>
+          <DialogContentText>Request failed</DialogContentText>
+          <DialogActions>
+            <Button>Goto Login Page</Button>
+          </DialogActions>
+        </Dialog>
+      </>
+    );
+  }
+}
+export default connect(mapStateToProps)(withStyles(classes)(CreateAccoutView));
