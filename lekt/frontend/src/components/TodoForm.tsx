@@ -19,7 +19,7 @@ class TodoForm extends Component<Props, {}> {
       <>
         <Typography variant="h6">Submit new Todo</Typography>
         <Formik
-          initialValues={{ text: "", author: "", other: "" }}
+          initialValues={{ text: "" }}
           validationSchema={yup.object().shape({
             text: yup
               .string()
@@ -27,7 +27,11 @@ class TodoForm extends Component<Props, {}> {
               .label("Text")
           })}
           onSubmit={(values, bag) => {
-            addTodo(values, bag);
+            addTodo(values);
+            bag.setSubmitting(true);
+            setTimeout(() => {
+              bag.resetForm();
+            }, 1000);
           }}
         >
           <Form>

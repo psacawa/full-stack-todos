@@ -14,6 +14,7 @@ import {
   WithStyles,
   withStyles
 } from "@material-ui/core";
+import { toPairs } from "lodash";
 
 const styles = {
   list: {
@@ -22,8 +23,7 @@ const styles = {
 };
 
 const mapStateToProps = (state: RootState) => ({
-  todos: todosSelector(state),
-  isFetching: state.display.todos.isFetching
+  todos: todosSelector(state)
 });
 const dispatchProps = {
   removeTodo: removeTodo.request
@@ -38,20 +38,26 @@ class TodoList extends Component<Props> {
     this.state = {};
   }
   render() {
-    const { removeTodo, todos, isFetching, classes } = this.props;
-    return isFetching ? (
-      <CircularProgress />
-    ) : (
+    const { removeTodo, todos, classes } = this.props;
+    return (
       <div className="Todos">
         <List className={classes.list} dense>
-          {todos.map(todo => (
-            <ListItem key={todo.id}>
-              <ListItemText primary={todo.text}></ListItemText>
-              <ListItemSecondaryAction onClick={() => removeTodo(todo.id)}>
-                <IconButton>
-                  <Clear />
-                </IconButton>
-              </ListItemSecondaryAction>
+          {toPairs(todos).map(([key, todo]) => (
+            <ListItem key={todo.value.id}>
+              <ListItemText primary={todo.value.text}></ListItemText>
+              {todo.isSubmitting ? (
+                <ListItemSecondaryAction>
+                  <IconButton>
+                    <CircularProgress size="1em" />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              ) : (
+                <ListItemSecondaryAction onClick={() => removeTodo(todo.value.id)}>
+                  <IconButton>
+                    <Clear />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              )}
             </ListItem>
           ))}
         </List>

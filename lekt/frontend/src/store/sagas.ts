@@ -15,36 +15,27 @@ import { ActionType, getType, RootAction } from "typesafe-actions";
 import { flatten } from "lodash";
 import { FormikHelpers } from "formik";
 
-function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {
-  const { setSubmitting, resetForm } = action.meta;
-  try {
-    const data: Todo = yield call(api.addTodo, action.payload);
-    yield put(addTodo.success(data));
-  } catch (error) {
-    yield put(addTodo.failure(`addTodo failed ${error}`));
-  } finally {
-    setSubmitting(false);
-    resetForm();
-  }
-}
+// function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {
+//   const { setSubmitting, resetForm } = action.meta;
+//   try {
+//     const data: Todo = yield call(api.addTodo, action.payload);
+//     yield put(addTodo.success(data));
+//   } catch (error) {
+//     yield put(addTodo.failure(`addTodo failed ${error}`));
+//   } finally {
+//     setSubmitting(false);
+//     resetForm();
+//   }
+// }
 
-function* removeTodoSaga(action: ReturnType<typeof removeTodo.request>) {
-  try {
-    yield call(api.removeTodo, action.payload);
-    yield put(removeTodo.success(action.payload));
-  } catch (error) {
-    yield put(removeTodo.failure(`removeTodo failed ${error}`));
-  }
-}
-
-function* fetchTodosSaga(action: ReturnType<typeof fetchTodos.request>) {
-  try {
-    const data: TodoState = yield call(api.fetchTodos);
-    yield put(fetchTodos.success(data));
-  } catch (error) {
-    yield put(fetchTodos.failure(`fetchTodo failed ${error}`));
-  }
-}
+// function* fetchTodosSaga(action: ReturnType<typeof fetchTodos.request>) {
+//   try {
+//     const data: TodoState = yield call(api.fetchTodos);
+//     yield put(fetchTodos.success(data));
+//   } catch (error) {
+//     yield put(fetchTodos.failure(`fetchTodo failed ${error}`));
+//   }
+// }
 
 function* loginFlow() {
   while (true) {
@@ -114,9 +105,8 @@ function* createAccountSaga(action: ActionType<typeof createAccount.request>) {
 
 export default function* rootSaga() {
   yield all([
-    takeEvery(addTodo.request, addTodoSaga),
-    takeEvery(removeTodo.request, removeTodoSaga),
-    takeEvery(fetchTodos.request, fetchTodosSaga),
+    // takeEvery(addTodo.request, addTodoSaga),
+    // takeEvery(fetchTodos.request, fetchTodosSaga),
     takeEvery(createAccount.request, createAccountSaga),
     fork(loginFlow),
     fork(logoutFlow)

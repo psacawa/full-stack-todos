@@ -1,23 +1,25 @@
-import { createStore, applyMiddleware, compose } from "redux";
-import createSagaMiddleware from "redux-saga";
+import { createStore, applyMiddleware, compose, StoreEnhancer, Middleware } from "redux";
+import createSaga from "redux-saga";
 import rootReducer from "./reducers";
 import { createLogger } from "redux-logger";
 import { createOffline } from "@redux-offline/redux-offline";
 import offlineDefault from "@redux-offline/redux-offline/lib/defaults";
+import { configureStore } from "@reduxjs/toolkit";
 import rootSaga from "./sagas";
 import axios, { AxiosError, AxiosPromise, AxiosRequestConfig } from "axios";
 import { Action } from "redux";
 import { OfflineAction } from "@redux-offline/redux-offline/lib/types";
+import { fetchTodos } from "./actions";
 
 const persistOptions = {
   keyPrefix: "root"
 };
 const persistCallback = () => {
-  const key = store.getState().auth.key
+  const key = store.getState().auth.key;
   if (key) {
-    axios.defaults.headers['Authorization'] = `Token ${key}`
+    axios.defaults.headers["Authorization"] = `Token ${key}`;
   }
-}
+};
 
 const offlineEffect = (effect: AxiosRequestConfig, action: OfflineAction) =>
   axios(effect);
@@ -34,16 +36,28 @@ const offlineConfig = {
   persistOptions,
   persistCallback
 };
-const { middleware: offlineMiddleware, enhanceReducer, enhanceStore } = createOffline(
-  offlineConfig
-);
-
+const offline = createOffline(offlineConfig);
 const logger = createLogger();
-const sagaMiddleware = createSagaMiddleware();
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const middlewares = applyMiddleware(sagaMiddleware, logger, offlineMiddleware);
-const enhancer = composeEnhancers(enhanceStore, middlewares);
-export const store = createStore(enhanceReducer(rootReducer), enhancer);
-sagaMiddleware.run(rootSaga);
+const saga = createSaga();
+
+export const store = configureStore({
+  reducer: offline.enhanceReducer(rootReducer),
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({})
+      .splice(1, 1)
+      .concat(logger, saga, offline.middleware),
+  // this order of enhancers with offline first is necessary
+  // otherwise offline/network_change actions are caught by the middleware
+  enhancers: defaultEnhancers => [
+    offline.enhanceStore as StoreEnhancer,
+    ...defaultEnhancers
+  ]
+});
+saga.run(rootSaga);
+
+// // on starting the application, sync data if online
+// if (window.navigator.onLine) {
+//   store.dispatch(fetchTodos.request())
+// }
 
 export default store;
