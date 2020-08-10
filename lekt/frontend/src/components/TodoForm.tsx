@@ -1,10 +1,17 @@
 import React, { Component } from "react";
-import { Formik, Field, Form } from "formik";
-import { addTodo } from "../store/actions";
+import { Formik, Field, Form, FormikHelpers } from "formik";
+import { addTodo } from "store/actions";
 import { connect } from "react-redux";
 import { Button, Typography } from "@material-ui/core";
 import { TextField } from "formik-material-ui";
 import * as yup from "yup";
+
+function staggerForm(bag: FormikHelpers<any>) {
+  bag.setSubmitting(true);
+  setTimeout(() => {
+    bag.resetForm();
+  }, 1000);
+}
 
 let dispatchProps = {
   addTodo: addTodo.request
@@ -28,10 +35,7 @@ class TodoForm extends Component<Props, {}> {
           })}
           onSubmit={(values, bag) => {
             addTodo(values);
-            bag.setSubmitting(true);
-            setTimeout(() => {
-              bag.resetForm();
-            }, 1000);
+            staggerForm(bag);
           }}
         >
           <Form>

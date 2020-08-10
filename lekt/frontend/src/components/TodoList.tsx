@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { RootState } from "@src/types";
-import { removeTodo } from "../store/actions";
+import { removeTodo } from "store/actions";
 import { connect } from "react-redux";
-import { todosSelector } from "../store/selectors";
+import { getTodos } from "store/selectors";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Clear from "@material-ui/icons/Clear";
 import {
@@ -23,7 +23,7 @@ const styles = {
 };
 
 const mapStateToProps = (state: RootState) => ({
-  todos: todosSelector(state)
+  todos: getTodos(state)
 });
 const dispatchProps = {
   removeTodo: removeTodo.request

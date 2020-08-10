@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
-import { TodoState, Todo, CreateAccountData } from "@src/types";
-import { LoginData } from "../types";
+import { TodoState, Todo, CreateAccountData, AuthData } from "@src/types";
+import { LoginData } from "types";
 import { flatten } from "lodash";
 
 const todosBaseUrl = "/api/todos/";
@@ -13,7 +13,7 @@ function appendApiPromiseChain<
     .then(response => {
       return { data: response.data };
     })
-    .catch((error: AxiosError<Record<string, string[]>>) => {
+    .catch((error: AxiosError<Record<string, string | string[]> | "">) => {
       if (error.response) {
         const serverErrors = flatten(Object.values(error.response.data));
         return { errors: serverErrors };
@@ -28,25 +28,19 @@ export function addTodo(data: Todo) {
 }
 
 export function removeTodo(requestData: string) {
-  return axios
-    .delete(`${todosBaseUrl}${requestData}/`)
-    .then((response: AxiosResponse<Todo>) => {
-      return response.data;
-    });
+  return appendApiPromiseChain<null>(axios.delete(`${todosBaseUrl}${requestData}/`));
 }
 
 export function fetchTodos() {
-  return axios.get(todosBaseUrl).then((response: AxiosResponse<Todo[]>) => {
-    return response.data;
-  });
+  return appendApiPromiseChain<Todo[]>(axios.get(todosBaseUrl));
 }
 
 export function login(loginData: LoginData) {
-  return axios.post("/auth/login/", loginData).then(response => response.data);
+  return appendApiPromiseChain<AuthData>(axios.post("/auth/login/", loginData))
 }
 
 export function logout() {
-  return axios.post("/auth/logout/").then(response => response.data);
+  return axios.post("/auth/logout/")
 }
 
 export function fetchUser() {

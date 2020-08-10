@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 import { connect } from "react-redux";
-import { createAccount } from "../store/actions";
-import { CreateAccountData, RootState } from "../types";
+import { createAccount } from "store/actions";
+import { CreateAccountData, RootState } from "types";
 import { TextField } from "formik-material-ui";
 import {
   DialogContentText,

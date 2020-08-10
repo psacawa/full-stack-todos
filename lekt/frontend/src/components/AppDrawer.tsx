@@ -3,14 +3,14 @@ import { Drawer, Typography, Divider } from "@material-ui/core";
 import { createStyles, withStyles } from "@material-ui/core/styles";
 import { NavLink } from "react-router-dom";
 import { List, ListItem, ListItemText } from "@material-ui/core";
-import { baseRoutes, loggedInRoutes, loggedOutRoutes } from "../routes";
+import { baseRoutes, loggedInRoutes, loggedOutRoutes } from "routes";
 import { RootState } from "@src/types";
 import { connect } from "react-redux";
-import { userSelector } from "../store/selectors";
+import { getUser } from "store/selectors";
 import { WithStyles } from "@material-ui/core";
 
 const mapStateToProps = (state: RootState) => ({
-  user: userSelector(state),
+  user: getUser(state),
   loggedIn: state.auth.loggedIn
 });
 

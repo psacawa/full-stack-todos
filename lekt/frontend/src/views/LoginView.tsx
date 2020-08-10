@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
-import { RootState } from "../types";
-import { login } from "../store/actions";
+import { RootState } from "types";
+import { login } from "store/actions";
 import { connect } from "react-redux";
 import * as yup from "yup";
 import {

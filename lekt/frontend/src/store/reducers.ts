@@ -12,8 +12,6 @@ import {
   LoginDisplayState,
   CreateAccountDisplayState,
   Todo,
-  CommitAction,
-  OfflineMeta,
   Incomplete
 } from "@src/types";
 import { addTodo, removeTodo, fetchTodos, login, logout, createAccount } from "./actions";
@@ -27,27 +25,30 @@ export const todoReducer = createReducer<TodoState>({}, builder =>
       state[id] = { value: action.payload, isSubmitting: true };
     })
     .addCase(addTodo.success, (state, action) => {
-      const todo = action.payload.data;
+      const { todo, tmpId } = action.payload;
       state[todo.id] = { value: todo, isSubmitting: false };
-      delete state[action.meta.id];
+      delete state[tmpId];
     })
     .addCase(addTodo.failure, (state, action) => {
-      delete state[action.meta.id];
+      delete state[action.payload.tmpId];
     })
     .addCase(removeTodo.request, (state, action) => {
-      state[action.payload].isSubmitting = true;
+      state[action.payload.id].isSubmitting = true;
     })
     .addCase(removeTodo.success, (state, action) => {
-      delete state[action.meta.id];
+      delete state[action.payload.id];
     })
     .addCase(removeTodo.failure, (state, action) => {
-      state[action.meta.id].isSubmitting = false;
+      state[action.payload.id].isSubmitting = false;
     })
     .addCase(fetchTodos.success, (state, action) => {
-      const todos = action.payload.data;
+      const todos = action.payload;
       return fromPairs(
         todos.map(todo => [todo.id, { value: todo, isSubmitting: false }])
       );
+    })
+    .addCase(logout.success, (state, action) => {
+      return {};
     })
 );
 
@@ -119,12 +120,12 @@ const authReducer = createReducer<UserState>(
   },
   builder =>
     builder
-      .addCase(login.success as any, (state, action) => ({
+      .addCase(login.success, (state, action) => ({
         user: action.payload.user,
         key: action.payload.key,
         loggedIn: true
       }))
-      .addCase(logout.success as any, (state, action) => ({ loggedIn: false }))
+      .addCase(logout.request, (state, action) => ({ loggedIn: false }))
 );
 
 export default combineReducers({
