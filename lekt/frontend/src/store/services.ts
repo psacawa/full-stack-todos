@@ -1,8 +1,25 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import { TodoState, Todo, CreateAccountData } from "@src/types";
 import { LoginData } from "../types";
+import { flatten } from "lodash";
 
 const todosBaseUrl = "/api/todos/";
+
+export function addTodo(data: Todo) {
+  return axios
+    .post(todosBaseUrl, data)
+    .then((response: AxiosResponse<Todo>) => {
+      return { data: response.data };
+    })
+    .catch((error: AxiosError<Record<string, string[]>>) => {
+      if (error.response) {
+        const serverErrors = flatten(Object.values(error.response.data));
+        return { errors: serverErrors };
+      } else {
+        return { errors: ["Request failed"] };
+      }
+    });
+}
 
 export function removeTodo(requestData: string) {
   return axios
@@ -31,7 +48,5 @@ export function fetchUser() {
 }
 
 export function createAccount(accountData: CreateAccountData) {
-  return axios.post("/auth/registration/", accountData).then(
-    response => response.data,
-  );
+  return axios.post("/auth/registration/", accountData).then(response => response.data);
 }
