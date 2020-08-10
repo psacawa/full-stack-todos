@@ -16,6 +16,7 @@
     "jsx": "react",
     "baseUrl": "src/",
     "paths": { "@src/*": ["*"] },
+    "downlevelIteration": true
     // "noUnusedLocals": true
   },
   "include": ["src"]

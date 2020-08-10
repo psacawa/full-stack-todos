@@ -5,10 +5,12 @@ import { flatten } from "lodash";
 
 const todosBaseUrl = "/api/todos/";
 
-export function addTodo(data: Todo) {
-  return axios
-    .post(todosBaseUrl, data)
-    .then((response: AxiosResponse<Todo>) => {
+function appendApiPromiseChain<
+  R extends any,
+  T extends AxiosResponse<R> = AxiosResponse<R>
+>(axiosPromise: Promise<T>) {
+  return axiosPromise
+    .then(response => {
       return { data: response.data };
     })
     .catch((error: AxiosError<Record<string, string[]>>) => {
@@ -19,6 +21,10 @@ export function addTodo(data: Todo) {
         return { errors: ["Request failed"] };
       }
     });
+}
+
+export function addTodo(data: Todo) {
+  return appendApiPromiseChain<Todo>(axios.post(todosBaseUrl, data));
 }
 
 export function removeTodo(requestData: string) {
