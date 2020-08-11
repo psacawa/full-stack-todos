@@ -16,7 +16,8 @@ import { fetchTodos } from "./actions";
 const persistOptions: PersistConfig<RootState> = {
   key: "root",
   version: 1,
-  storage
+  storage,
+  blacklist: ["display"]
 };
 const persistCallback = () => {
   const key = getAuthKey(store.getState());
@@ -40,7 +41,7 @@ saga.run(rootSaga);
 
 // on starting the application, sync data if online
 if (window.navigator.onLine) {
-  store.dispatch(fetchTodos.request())
+  store.dispatch(fetchTodos.request());
 }
 
 export default store;
