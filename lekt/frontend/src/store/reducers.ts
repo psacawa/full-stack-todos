@@ -52,25 +52,6 @@ export const todoReducer = createReducer<TodoState>({}, builder =>
     })
 );
 
-// const todoDisplayReducer = createReducer<TodoDisplayState>({
-//   isFetching: false
-// })
-//   .handleAction([addTodo.request, addTodo.success, addTodo.failure], (state, action) => {
-//     return { isFetching: action.type === getType(addTodo.request) };
-//   })
-//   .handleAction(
-//     [removeTodo.request, removeTodo.success, removeTodo.failure],
-//     (state, action) => {
-//       return { isFetching: action.type === getType(removeTodo.request) };
-//     }
-//   )
-//   .handleAction(
-//     [fetchTodos.request, fetchTodos.success, fetchTodos.failure],
-//     (state, action) => {
-//       return { isFetching: action.type === getType(fetchTodos.request) };
-//     }
-//   );
-
 const loginDisplayReducer = createReducer<LoginDisplayState>(
   {
     serverErrors: [],
@@ -78,40 +59,43 @@ const loginDisplayReducer = createReducer<LoginDisplayState>(
   },
   builder =>
     builder
-      .addCase(login.request as any, (state, action) => ({
+      .addCase(login.request, (state, action) => ({
         serverErrors: [],
         isFetching: true
       }))
-      .addCase(login.failure as any, (state, action) => ({
+      .addCase(login.failure, (state, action) => ({
         serverErrors: action.payload,
         isFetching: false
       }))
-      .addCase(login.success as any, (state, action) => ({
+      .addCase(login.success, (state, action) => ({
         serverErrors: [],
         isFetching: false
       }))
 );
-// const createAccountDisplayReducer = createReducer<CreateAccountDisplayState>({
-//   serverErrors: [],
-//   isFetching: false
-// })
-//   .handleAction(createAccount.request, (state, action) => ({
-//     serverErrors: [],
-//     isFetching: true
-//   }))
-//   .handleAction(createAccount.failure, (state, action) => ({
-//     serverErrors: action.payload,
-//     isFetching: false
-//   }))
-//   .handleAction(createAccount.success, (state, action) => ({
-//     serverErrors: [],
-//     isFetching: false
-//   }));
+const createAccountDisplayReducer = createReducer<CreateAccountDisplayState>(
+  {
+    serverErrors: [],
+    isFetching: false
+  },
+  builder =>
+    builder
+      .addCase(createAccount.request, (state, action) => ({
+        serverErrors: [],
+        isFetching: true
+      }))
+      .addCase(createAccount.success, (state, action) => ({
+        serverErrors: [],
+        isFetching: false
+      }))
+      .addCase(createAccount.failure, (state, action) => ({
+        serverErrors: [],
+        isFetching: false
+      }))
+);
 
 const displayReducer = combineReducers({
-  // todos: todoDisplayReducer,
-  login: loginDisplayReducer
-  // account: createAccountDisplayReducer
+  login: loginDisplayReducer,
+  account: createAccountDisplayReducer
 });
 
 const authReducer = createReducer<UserState>(

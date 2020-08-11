@@ -25,12 +25,6 @@ export interface CreateAccountDisplayState {
   serverErrors: string[];
 }
 
-export interface DisplayState {
-  todo: TodoDisplayState;
-  login: LoginDisplayState;
-  createAccount: CreateAccountDisplayState;
-}
-
 interface CreateAccountData {
   username: string;
   password1: string;
