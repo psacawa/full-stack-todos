@@ -70,7 +70,6 @@ function* authenticate(values: LoginData, bag?: FormikHelpers<any>) {
     const user: User = yield* call(api.fetchUser);
     yield put(login.success({ user, key }));
     yield put(fetchTodos.request());
-    bag && bag.resetForm();
   } else {
     yield delay(500);
     yield put(login.failure(result.errors));
@@ -83,6 +82,7 @@ function* logoutFlow() {
     yield take(logout.request);
     const result = yield* call(api.logout);
     if (succeeded(result)) {
+      // this does nothing
       yield put(logout.success());
     } else {
       // this does nothing

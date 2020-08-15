@@ -1,7 +1,8 @@
-import LoginView from "./views/LoginView";
-import LogoutView from "./views/LogoutView";
-import TodoView from "./views/TodoView";
-import CreateAccountView from "./views/CreateAccountView";
+import LoginView from "views/LoginView";
+import LogoutView from "views/LogoutView";
+import TodoView from "views/TodoView";
+import CreateAccountView from "views/CreateAccountView";
+
 interface AppRoute {
   urlPath: string;
   drawerText: string;
@@ -14,7 +15,7 @@ export const baseRoutes: AppRoute[] = [
     drawerText: "Todos",
     component: TodoView,
     exact: true
-  },
+  }
 ];
 export const loggedOutRoutes: AppRoute[] = [
   {
@@ -28,8 +29,8 @@ export const loggedOutRoutes: AppRoute[] = [
     drawerText: "Create Account",
     component: CreateAccountView,
     exact: false
-  },
-]
+  }
+];
 
 export const loggedInRoutes: AppRoute[] = [
   {
@@ -37,8 +38,8 @@ export const loggedInRoutes: AppRoute[] = [
     drawerText: "Logout",
     component: LogoutView,
     exact: false
-  },
-]
+  }
+];
 
-const routes = baseRoutes.concat(loggedInRoutes).concat(loggedOutRoutes)
-export default  routes
+const routes = baseRoutes.concat(loggedInRoutes).concat(loggedOutRoutes);
+export default routes;
