@@ -1,11 +1,9 @@
 import axios from "axios";
 import * as api from "./services";
-import { Id } from "@src/types";
-import { existsSync } from "fs";
+import { Id, Todo } from "@src/types";
 
 jest.mock("axios");
 
-// let mockExistsSync = existsSync as any as jest.Mock<typeof existsSync>;
 let mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe("addTodos endpoint", () => {
@@ -16,11 +14,11 @@ describe("addTodos endpoint", () => {
     const resp = { status: 200, data: completeTodo };
     mockAxios.post.mockResolvedValueOnce(resp);
 
-    await expect(api.addTodo(inputTodo)).resolves.toEqual({ data: completeTodo });
-    await expect(axios.post).toHaveBeenCalledWith("/api/todos/", inputTodo);
+    await expect(api.addTodo(inputTodo)).resolves.toEqual(completeTodo);
+    expect(axios.post).toHaveBeenCalledWith("/api/todos/", inputTodo);
   });
 
-  it("client error", async () => {
+  it("client validation error", async () => {
     const resp = {
       response: {
         status: 400,
@@ -29,12 +27,14 @@ describe("addTodos endpoint", () => {
     };
     mockAxios.post.mockRejectedValueOnce(resp);
 
-    await expect(api.addTodo(inputTodo)).resolves.toEqual({
-      errors: ["This field is required."]
+    expect.hasAssertions();
+    return api.addTodo(inputTodo).catch((error: api.ValidationError<Todo>) => {
+      expect(error).toBeInstanceOf(api.ValidationError);
+      expect(error.validationErrors).toMatchObject({ text: ["This field is required."] });
     });
   });
 
-  it("authorization error", async () => {
+  it("client authentication error", async () => {
     const resp = {
       response: {
         status: 401,
@@ -42,25 +42,34 @@ describe("addTodos endpoint", () => {
       }
     };
     mockAxios.post.mockRejectedValueOnce(resp);
-    await expect(api.addTodo(inputTodo)).resolves.toEqual({
-      errors: ["Authentication credentials were not provided."]
+    expect.hasAssertions();
+    await api.addTodo(inputTodo).catch((error: api.ClientError) => {
+      expect(error).toBeInstanceOf(api.ClientError);
+      expect(error.message).toEqual("Authentication credentials were not provided.");
     });
   });
 
-  it("request not fired", async () => {
-    const resp = {};
+  it("server error", async () => {
+    const resp = {
+      response: {
+        status: 500,
+        data: "<p>500 Internal Server Error</p>"
+      }
+    };
     mockAxios.post.mockRejectedValueOnce(resp);
-    await expect(api.addTodo(inputTodo)).resolves.toEqual({
-      errors: ["Request failed"]
+    expect.hasAssertions();
+    await api.addTodo(inputTodo).catch((error: api.ServerError) => {
+      expect(error).toBeInstanceOf(api.ServerError);
+      expect(error.message).toMatch(/server error/i);
     });
   });
 });
 
 describe("fetchTodos endpoint", () => {
-  xit("fetchTodos endpoint", () => {
+  it("fetchTodos endpoint", () => {
     const todos = [{ id: 3, owner: 1, text: "todo1" }];
     const resp = { status: 200, data: todos };
-    (axios.get as jest.Mock).mockResolvedValueOnce(resp);
-    expect(api.fetchTodos());
+    mockAxios.get.mockResolvedValueOnce(resp);
+    expect(api.fetchTodos()).resolves.toEqual(todos);
   });
 });

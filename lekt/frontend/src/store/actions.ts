@@ -1,6 +1,6 @@
 import { createAction, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { AxiosResponse, AxiosError, AxiosRequestConfig } from "axios";
-import { Todo, LoginSuccessPayload, Incomplete, Id } from "@src/types";
+import { Todo, LoginSuccessPayload, Incomplete, Id, ErrorList } from "@src/types";
 import { CreateAccountData, LoginData } from "types";
 import { FormikHelpers } from "formik";
 
@@ -14,7 +14,7 @@ export const addTodo = {
   success: createAction("ADD_TODO_SUCCESS", (todo: Todo, tmpId: Id) => ({
     payload: { todo, tmpId }
   })),
-  failure: createAction("ADD_TODO_FAILURE", (error: string[], tmpId: Id) => ({
+  failure: createAction("ADD_TODO_FAILURE", (error: ErrorList, tmpId: Id) => ({
     payload: {
       tmpId
     },
@@ -31,7 +31,7 @@ export const removeTodo = {
 export const fetchTodos = {
   request: createAction("FETCH_TODO_REQUEST"),
   success: createAction<Todo[], "FETCH_TODO_SUCCESS">("FETCH_TODO_SUCCESS"),
-  failure: createAction("FETCH_TODO_FAILURE")
+  failure: createAction<ErrorList>("FETCH_TODO_FAILURE")
 };
 
 export const createAccount = {
@@ -43,7 +43,7 @@ export const createAccount = {
     })
   ),
   success: createAction("CREATE_ACCOUNT_SUCCESS"),
-  failure: createAction("CREATE_ACCOUNT_FAILURE", (error: string[]) => ({
+  failure: createAction("CREATE_ACCOUNT_FAILURE", (error: ErrorList) => ({
     payload: undefined,
     error
   }))
@@ -55,7 +55,7 @@ export const login = {
     meta: bag
   })),
   success: createAction<LoginSuccessPayload, "LOGIN_SUCCESS">("LOGIN_SUCCESS"),
-  failure: createAction<string[], "LOGIN_FAILURE">("LOGIN_FAILURE")
+  failure: createAction<ErrorList, "LOGIN_FAILURE">("LOGIN_FAILURE")
 };
 
 export const logout = {

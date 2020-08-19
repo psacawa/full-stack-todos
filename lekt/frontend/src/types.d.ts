@@ -59,5 +59,6 @@ interface UserState {
 }
 
 type Incomplete<T> = Omit<T, "id">;
+export type ErrorList = string[]
 
 export type RootState = StateType<typeof import("@src/store/reducers").default>;

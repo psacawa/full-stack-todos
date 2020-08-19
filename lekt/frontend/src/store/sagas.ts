@@ -3,50 +3,58 @@ import { call, take, fork } from "typed-redux-saga";
 import { takeCreator } from "lib/typed-saga-effects";
 import { Task } from "redux-saga";
 import { addTodo, removeTodo, fetchTodos, login, logout, createAccount } from "./actions";
+import { history } from "routes";
+
 import {
   TodoState,
   Todo,
   LoginData,
   AuthData,
   User,
-  CreateAccountData
+  CreateAccountData,
+  ErrorList
 } from "@src/types";
 import * as api from "./services";
 import axios from "axios";
 import { flatten } from "lodash";
 import { FormikHelpers } from "formik";
 
-// type predicate util which allows typesafe check of result status
-function succeeded<T, E>(arg: { data: T } | { errors: E }): arg is { data: T } {
-  return "data" in arg;
-}
-
 function* addTodoSaga(action: ReturnType<typeof addTodo.request>) {
   const tmpId = action.payload.id;
-  const result = yield* call(api.addTodo, action.payload);
-  if (succeeded(result)) {
-    yield put(addTodo.success(result.data, tmpId));
-  } else {
-    yield put(addTodo.failure(result.errors, tmpId));
+  try {
+    const data = yield* call(api.addTodo, action.payload);
+    yield put(addTodo.success(data, tmpId));
+  } catch (error) {
+    if (api.isValidationError<Todo>(error)) {
+      const { validationErrors } = error;
+      const errorList: string[] = flatten(Object.values(validationErrors));
+      yield put(addTodo.failure(errorList, tmpId));
+    } else if (error instanceof Error) {
+      yield put(addTodo.failure([error.message], tmpId));
+    }
   }
 }
 
 function* removeTodoSaga(action: ReturnType<typeof removeTodo.request>) {
   const id = action.payload.id;
-  const result = yield* call(api.removeTodo, id);
-  if (succeeded(result)) {
+  try {
+    yield* call(api.removeTodo, id);
     yield put(removeTodo.success(action.payload.id));
-  } else {
-    yield put(removeTodo.failure(action.payload.id));
+  } catch (error) {
+    if (error instanceof Error) {
+      yield put(removeTodo.failure(action.payload.id));
+    }
   }
 }
 
 function* fetchTodosSaga(action: ReturnType<typeof fetchTodos.request>) {
-  const result = yield* call(api.fetchTodos);
-  if (succeeded(result)) {
-    yield put(fetchTodos.success(result.data));
-  } else {
-    yield put(fetchTodos.failure());
+  try {
+    const todos = yield* call(api.fetchTodos);
+    yield put(fetchTodos.success(todos));
+  } catch (error) {
+    if (error instanceof Error) {
+      yield put(fetchTodos.failure([error.name]));
+    }
   }
 }
 
@@ -63,32 +71,31 @@ function* loginFlow() {
 
 function* authenticate(values: LoginData, bag?: FormikHelpers<any>) {
   bag && bag.setSubmitting(true);
-  const result = yield* call(api.login, values);
-  if (succeeded(result)) {
-    const { key } = result.data;
+  try {
+    const { key } = yield* call(api.login, values);
     axios.defaults.headers.common["Authorization"] = `Token ${key}`;
     const user: User = yield* call(api.fetchUser);
     yield put(login.success({ user, key }));
     yield put(fetchTodos.request());
-  } else {
+  } catch (error) {
     yield delay(500);
-    yield put(login.failure(result.errors));
+    if (error instanceof api.ValidationError) {
+      const errorList = flatten(Object.values(error.validationErrors));
+      yield put(login.failure(errorList));
+    } else {
+      yield put(login.failure(["Login Failed"]));
+    }
     bag && bag.setSubmitting(false);
   }
 }
 
-function* logoutFlow() {
-  while (true) {
-    yield take(logout.request);
-    const result = yield* call(api.logout);
-    if (succeeded(result)) {
-      // this does nothing
-      yield put(logout.success());
-    } else {
-      // this does nothing
-      yield put(logout.failure());
-    }
+function* logoutSaga() {
+  try {
     delete axios.defaults.headers.common["Authorization"];
+    yield call(api.logout);
+    yield put(logout.success());
+  } catch (error) {
+    yield put(logout.failure());
   }
 }
 
@@ -122,6 +129,6 @@ export default function* rootSaga() {
     takeEvery(fetchTodos.request, fetchTodosSaga),
     takeEvery(createAccount.request, createAccountSaga),
     fork(loginFlow),
-    fork(logoutFlow)
+    takeEvery(logout.request, logoutSaga)
   ]);
 }
