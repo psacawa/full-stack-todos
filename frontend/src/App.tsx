@@ -1,12 +1,9 @@
 import React from "react";
 import { Router, Switch, Route } from "react-router-dom";
-import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core";
 import AppDrawer from "./components/AppDrawer";
 import "main.css";
-import routes from "./routes";
-
-const history = createBrowserHistory();
+import routes, { history } from "./routes";
 
 const useStyles = makeStyles({
   root: { display: "flexbox" },

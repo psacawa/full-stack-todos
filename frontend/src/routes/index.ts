@@ -2,6 +2,9 @@ import LoginView from "views/LoginView";
 import LogoutView from "views/LogoutView";
 import TodoView from "views/TodoView";
 import CreateAccountView from "views/CreateAccountView";
+import { createBrowserHistory } from "history";
+
+export const history = createBrowserHistory();
 
 interface AppRoute {
   urlPath: string;
