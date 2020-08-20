@@ -1,7 +1,7 @@
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [join (BASE_DIR, 'lekt', 'templates')],
+        "DIRS": [join (BASE_DIR, 'main', 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

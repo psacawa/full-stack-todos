@@ -8,7 +8,7 @@ LOGGING = {
         },
         "simple": {"format": "{levelname} {name} {message}", "style": "{"},
     },
-    "loggers": {"lekt": {"handlers": ["console"], "level": "DEBUG", "propagate": True}},
+    "loggers": {"main": {"handlers": ["console"], "level": "DEBUG", "propagate": True}},
     "handlers": {
         "console": {
             "level": "DEBUG",
