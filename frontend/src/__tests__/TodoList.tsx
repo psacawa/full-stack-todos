@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import configureStore from "redux-mock-store";
 
-import TodoList from "./TodoList";
+import TodoList from "components/TodoList";
 import { Provider } from "react-redux";
 import { removeTodo } from "store/actions";
 import { Id, TodoState, RootState } from "@src/types";

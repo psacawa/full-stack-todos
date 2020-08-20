@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as api from "./services";
+import * as api from "store/services";
 import { Id, Todo } from "@src/types";
 
 jest.mock("axios");
