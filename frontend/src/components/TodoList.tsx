@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { RootState } from "@src/types";
+import { RootState, Id } from "@src/types";
 import { removeTodo } from "store/actions";
 import { connect } from "react-redux";
 import { getTodos } from "store/selectors";
@@ -10,11 +10,11 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
+  Icon,
   IconButton,
   WithStyles,
   withStyles
 } from "@material-ui/core";
-import { toPairs } from "lodash";
 
 const styles = {
   list: {
@@ -42,7 +42,7 @@ class TodoList extends Component<Props> {
     return (
       <div className="Todos">
         <List className={classes.list} dense>
-          {toPairs(todos).map(([key, todo]) => (
+          {Object.values(todos).map(todo => (
             <ListItem key={todo.value.id}>
               <ListItemText primary={todo.value.text}></ListItemText>
               {todo.isSubmitting ? (
@@ -52,7 +52,7 @@ class TodoList extends Component<Props> {
                   </IconButton>
                 </ListItemSecondaryAction>
               ) : (
-                <ListItemSecondaryAction onClick={() => removeTodo(todo.value.id)}>
+                <ListItemSecondaryAction onClick={() => removeTodo(todo.value.id )}>
                   <IconButton>
                     <Clear />
                   </IconButton>
