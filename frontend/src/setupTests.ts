@@ -7,4 +7,4 @@ import "@testing-library/jest-dom/extend-expect";
 import "jest-extended";
 
 // pozwala tworzyć łańcuchy assercji
-// import "jest-chain"
+import "jest-chain"

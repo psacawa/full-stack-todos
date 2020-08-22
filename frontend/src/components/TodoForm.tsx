@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 import { addTodo } from "store/actions";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { Button, Typography } from "@material-ui/core";
 import { TextField } from "formik-material-ui";
 import * as yup from "yup";
@@ -39,7 +39,7 @@ class TodoForm extends Component<Props, {}> {
           }}
         >
           <Form>
-            <Field component={TextField} label="Todo" name="text" type="text" />
+            <Field component={TextField} id="todo" label="Todo" name="text" type="text" />
             <div>
               <Button type="submit">Submit</Button>
             </div>
@@ -50,3 +50,9 @@ class TodoForm extends Component<Props, {}> {
   }
 }
 export default connect(null, dispatchProps)(TodoForm);
+
+declare module "redux" {
+  interface Dispatch {
+    (x: number): Promise<any>;
+  }
+}
