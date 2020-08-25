@@ -5,6 +5,7 @@ from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
 from rest_framework import fields
 from rest_framework.permissions import IsAuthenticated
 from .models import Todo
+from main.models import UserProfile
 #  from .utils import ReadWriteSerializerMixin
 
 class TodoSerializer(ModelSerializer):
@@ -21,7 +22,7 @@ class TodoViewSet(ModelViewSet):
     def get_queryset(self):
         """ Get only todos for the authed user. """
         user = self.request.user
-        return Todo.objects.filter(owner=user)
+        return user.profile.todos.all()
     def perform_create(self, serializer):
         """ Fill in user from authentication data """
         serializer.save(owner=self.request.user)

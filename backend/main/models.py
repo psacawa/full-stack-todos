@@ -9,7 +9,7 @@ class UserProfile(models.Model):
 
     #  id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    todos = models.ManyToManyField("Todo")
+    todos = models.ManyToManyField("todos.Todo")
 
     def __repr__(self):
         return f"UserProfile(user={self.user})"

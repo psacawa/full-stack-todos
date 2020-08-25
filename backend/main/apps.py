@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
-class TodosConfig(AppConfig):
-    name = 'todos'
+class MainConfig(AppConfig):
+    name = 'main'
     def ready(self):
         from .signals import createUserProfile
