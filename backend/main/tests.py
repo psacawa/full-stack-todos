@@ -1,12 +1,10 @@
 import pytest
-import os
-from time import time
 from rest_framework.test import APIClient
 from test_plus.test import APITestCase
 from django.core import mail
 from rest_framework.response import Response
 from rest_framework import status
-from pytest_django import asserts as django_assert
+from pytest_django.asserts import TestCase
 from allauth.account.models import EmailAddress
 import re
 import logging
