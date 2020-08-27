@@ -13,5 +13,10 @@ def todo_searchview_test(tp_api: APITestCase):
     )
     tp_api.response_200 (response)
     for item in response.data['results']:
-       assert "justifie" in item['text']
-       assert item['owner'] == None
+        assert "justifie" in item['text']
+        assert item['owner'] == None
+
+def todo_searchview_invalid_test(tp_api: APITestCase):
+    """ test that without search_query parameter view 400s """
+    response: Response = tp_api.client.get('/api/search/')
+    tp_api.response_400(response)

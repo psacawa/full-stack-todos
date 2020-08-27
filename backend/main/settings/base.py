@@ -24,7 +24,7 @@ SECRET_KEY = "l^)ah3e42jh5*gx1v7hz6@xxrdu9zuwvo!psck0&wm3%+x1a+f"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = ENVIRONMENT == "development"
 
-ALLOWED_HOSTS = ['todos.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ["todos.com", "127.0.0.1", "localhost"]
 
 # Application definition
 INSTALLED_APPS = [
